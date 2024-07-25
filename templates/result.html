@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Result</title>
+</head>
+<body>
+    <h1>Resume Evaluation Result</h1>
+    <p>Match Score: {{ match_score }}%</p>
+    <h2>Matched Key Phrases:</h2>
+    <ul>
+        {% for keyword in matched_keywords %}
+            <li>{{ keyword }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Missing Key Phrases:</h2>
+    <ul>
+        {% for keyword in missing_keywords %}
+            <li>{{ keyword }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Upload Another</a>
+</body>
+</html>

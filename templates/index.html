@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Evaluation</title>
+</head>
+<body>
+    <h1>Resume and Job Description Evaluation</h1>
+    <form action="/evaluate" method="post" enctype="multipart/form-data">
+        <label for="resume_file">Upload Resume (PDF or DOCX):</label>
+        <input type="file" id="resume_file" name="resume_file" accept=".pdf, .docx" required><br><br>
+        
+        <label for="job_description">Job Description:</label>
+        <textarea id="job_description" name="job_description" rows="10" cols="50" required></textarea><br><br>
+        
+        <button type="submit">Evaluate</button>
+    </form>
+</body>
+</html>
