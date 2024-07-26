@@ -3,18 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Evaluation</title> 
+    <title>Resume Evaluation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin-top: 30px;
+            max-width: 900px; /* Increase the maximum width */
+        }
+        .card {
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px; /* Set a fixed height */
+            width: 100%;
+        }
+        .text-highlight {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #resultArea {
+            display: none;
+            margin-top: 30px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Resume and Job Description Evaluation</h1>
-    <form action="/evaluate" method="post" enctype="multipart/form-data">
-        <label for="resume_file">Upload Resume (PDF or DOCX):</label>
-        <input type="file" id="resume_file" name="resume_file" accept=".pdf, .docx" required><br><br>
-        
-        <label for="job_description">Job Description:</label>
-        <textarea id="job_description" name="job_description" rows="10" cols="50" required></textarea><br><br>
-        
-        <button type="submit">Evaluate</button>
-    </form>
+    <div class="container">
+        <div class="card">
+            <h1 class="text-center">Resume and Job Description Evaluation</h1>
+            <form id="evaluationForm" action="/evaluate" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="resume_file">Upload Resume (PDF or DOCX):</label>
+                    <input type="file" id="resume_file" name="resume_file" accept=".pdf, .docx" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="job_description">Job Description:</label>
+                    <textarea id="job_description" name="job_description" class="form-control" rows="10" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-custom btn-block">Evaluate</button>
+            </form>
+        </div>
+        <!-- Result area -->
+        <div id="resultArea" class="card">
+            <h2 class="text-center">Evaluation Result</h2>
+            <div class="chart-container">
+                <canvas id="matchScoreChart"></canvas>
+                <div class="text-center text-highlight" id="matchScoreText">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Chart.js Script -->
+    <script>
+        document.getElementById('evaluationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            var formData = new FormData(this);
+
+            fetch('/evaluate', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+              .then(data => {
+                document.getElementById('resultArea').style.display = 'block';
+                var matchScore = Math.round(data.match_score); // Round score to the nearest integer
+                document.getElementById('matchScoreText').textContent = `${matchScore}%`;
+
+                var ctx = document.getElementById('matchScoreChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Matched', 'Unmatched'],
+                        datasets: [{
+                            data: [matchScore, 100 - matchScore],
+                            backgroundColor: ['#28a745', '#e0e0e0'],
+                            borderColor: ['#28a745', '#e0e0e0'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem) {
+                                        return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+                                    }
+                                }
+                            },
+                            datalabels: {
+                                display: true,
+                                anchor: 'center',
+                                align: 'center',
+                                formatter: function(value) {
+                                    return value + '%';
+                                },
+                                font: {
+                                    weight: 'bold',
+                                    size: 24
+                                }
+                            }
+                        }
+                    }
+                });
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 </html>
