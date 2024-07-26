@@ -4,22 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluation Result</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 400px;
+            width: 400px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Resume Evaluation Result</h1>
-    <p>Match Score: {{ match_score }}%</p>
-    <h2>Matched Key Phrases:</h2>
-    <ul>
-        {% for keyword in matched_keywords %}
-            <li>{{ keyword }}</li>
-        {% endfor %}
-    </ul>
-    <h2>Missing Key Phrases:</h2>
-    <ul>
-        {% for keyword in missing_keywords %}
-            <li>{{ keyword }}</li>
-        {% endfor %}
-    </ul>
-    <a href="/">Upload Another</a>
+    <div class="container">
+        <div class="card">
+            <h1 class="text-center">Resume Evaluation Result</h1>
+            <p class="text-center">Match Score: {{ match_score }}%</p>
+            <div class="chart-container">
+                <canvas id="matchScoreChart"></canvas>
+            </div>
+            <h2>Matched Key Phrases:</h2>
+            <ul>
+                {% for keyword in matched_keywords %}
+                    <li>{{ keyword }}</li>
+                {% endfor %}
+            </ul>
+            <h2>Missing Key Phrases:</h2>
+            <ul>
+                {% for keyword in missing_keywords %}
+                    <li>{{ keyword }}</li>
+                {% endfor %}
+            </ul>
+            <a href="/" class="btn btn-custom btn-block">Upload Another</a>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Chart.js Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('matchScoreChart').getContext('2d');
+            var matchScore = {{ match_score }};
+            var chart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Matched', 'Unmatched'],
+                    datasets: [{
+                        label: 'Match Score',
+                        data: [matchScore, 100 - matchScore],
+                        backgroundColor: ['#007bff', '#e0e0e0'],
+                        borderColor: ['#007bff', '#e0e0e0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Match Score'
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
