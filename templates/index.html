@@ -18,7 +18,7 @@
         }
         .container {
             margin-top: 30px;
-            max-width: 900px; /* Increase the maximum width */
+            max-width: 900px;
         }
         .card {
             padding: 20px;
@@ -35,16 +35,32 @@
         }
         .chart-container {
             position: relative;
-            height: 400px; /* Set a fixed height */
+            height: 400px;
             width: 100%;
+            margin-bottom: 20px; /* Add space below the chart */
         }
         .text-highlight {
             font-size: 24px;
             font-weight: bold;
+            margin-top: 10px;
         }
         #resultArea {
             display: none;
             margin-top: 30px;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+        #tagsList {
+            margin-top: 20px;
+        }
+        .tags-container {
+            margin-top: 50px; /* Add space above the tags list */
         }
     </style>
 </head>
@@ -69,7 +85,10 @@
             <h2 class="text-center">Evaluation Result</h2>
             <div class="chart-container">
                 <canvas id="matchScoreChart"></canvas>
-                <div class="text-center text-highlight" id="matchScoreText">0%</div>
+            </div>
+            <div class="tags-container text-center">
+                <h3>Matched Relevant Tags</h3>
+                <div id="tagsList"></div>
             </div>
         </div>
     </div>
@@ -80,9 +99,22 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Chart.js Script -->
     <script>
+        var currentChart = null;
+
         document.getElementById('evaluationForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
             var formData = new FormData(this);
+
+            // Clear previous results
+            document.getElementById('resultArea').style.display = 'none';
+            var tagsList = document.getElementById('tagsList');
+            tagsList.innerHTML = '';
+            var ctx = document.getElementById('matchScoreChart').getContext('2d');
+
+            // Destroy previous chart instance if it exists
+            if (currentChart) {
+                currentChart.destroy();
+            }
 
             fetch('/evaluate', {
                 method: 'POST',
@@ -91,10 +123,17 @@
               .then(data => {
                 document.getElementById('resultArea').style.display = 'block';
                 var matchScore = Math.round(data.match_score); // Round score to the nearest integer
-                document.getElementById('matchScoreText').textContent = `${matchScore}%`;
+                var matchText = 'Match Status';
 
-                var ctx = document.getElementById('matchScoreChart').getContext('2d');
-                var chart = new Chart(ctx, {
+                // Determine match status
+                if (matchScore > 90) {
+                    matchText = 'Strong Match';
+                } else if (matchScore >= 80 && matchScore <= 90) {
+                    matchText = 'Good Match';
+                }
+
+                // Create a new chart
+                currentChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         labels: ['Matched', 'Unmatched'],
@@ -119,24 +158,47 @@
                                     }
                                 }
                             },
+                            // Custom plugin to add text in the center
                             datalabels: {
-                                display: true,
-                                anchor: 'center',
-                                align: 'center',
-                                formatter: function(value) {
-                                    return value + '%';
-                                },
-                                font: {
-                                    weight: 'bold',
-                                    size: 24
-                                }
+                                display: false
                             }
                         }
-                    }
+                    },
+                    plugins: [{
+                        beforeDraw: function(chart) {
+                            var ctx = chart.ctx;
+                            var width = chart.width;
+                            var height = chart.height;
+                            var fontSize = 24;
+                            var fontStyle = 'bold';
+                            var fontFamily = 'Arial';
+                            ctx.restore();
+                            var text = matchText;
+                            ctx.font = fontStyle + ' ' + fontSize + 'px ' + fontFamily;
+                            ctx.textBaseline = 'middle';
+                            var textX = Math.round((width - ctx.measureText(text).width) / 2);
+                            var textY = Math.round(height / 2);
+                            ctx.fillStyle = '#333';
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
+                        }
+                    }]
                 });
-            }).catch(error => {
+
+                // Display relevant tags
+                if (data.relevant_tags && data.relevant_tags.length > 0) {
+                    data.relevant_tags.forEach(function(tag) {
+                        var tagElement = document.createElement('span');
+                        tagElement.className = 'tag';
+                        tagElement.textContent = tag;
+                        tagsList.appendChild(tagElement);
+                    });
+                } else {
+                    tagsList.innerHTML = '<p>No relevant tags found.</p>';
+                }
+              }).catch(error => {
                 console.error('Error:', error);
-            });
+              });
         });
     </script>
 </body>
