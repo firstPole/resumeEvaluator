@@ -62,12 +62,17 @@
         .tags-container {
             margin-top: 50px; /* Add space above the tags list */
         }
+        .match-info {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
-            <h1 class="text-center">Resume and Job Description Evaluation</h1>
+            <h1 class="text-center">Resume Evaluation</h1>
             <form id="evaluationForm" action="/evaluate" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="resume_file">Upload Resume (PDF or DOCX):</label>
@@ -83,6 +88,7 @@
         <!-- Result area -->
         <div id="resultArea" class="card">
             <h2 class="text-center">Evaluation Result</h2>
+            <div class="match-info text-center" id="matchInfo">Match Info</div>
             <div class="chart-container">
                 <canvas id="matchScoreChart"></canvas>
             </div>
@@ -132,6 +138,9 @@
                     matchText = 'Good Match';
                 }
 
+                // Update match info section
+                document.getElementById('matchInfo').innerHTML = `<div>${matchScore}%</div><div>${matchText}</div>`;
+
                 // Create a new chart
                 currentChart = new Chart(ctx, {
                     type: 'doughnut',
@@ -157,32 +166,9 @@
                                         return tooltipItem.label + ': ' + tooltipItem.raw + '%';
                                     }
                                 }
-                            },
-                            // Custom plugin to add text in the center
-                            datalabels: {
-                                display: false
                             }
                         }
-                    },
-                    plugins: [{
-                        beforeDraw: function(chart) {
-                            var ctx = chart.ctx;
-                            var width = chart.width;
-                            var height = chart.height;
-                            var fontSize = 24;
-                            var fontStyle = 'bold';
-                            var fontFamily = 'Arial';
-                            ctx.restore();
-                            var text = matchText;
-                            ctx.font = fontStyle + ' ' + fontSize + 'px ' + fontFamily;
-                            ctx.textBaseline = 'middle';
-                            var textX = Math.round((width - ctx.measureText(text).width) / 2);
-                            var textY = Math.round(height / 2);
-                            ctx.fillStyle = '#333';
-                            ctx.fillText(text, textX, textY);
-                            ctx.save();
-                        }
-                    }]
+                    }
                 });
 
                 // Display relevant tags
