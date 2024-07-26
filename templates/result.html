@@ -66,7 +66,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var ctx = document.getElementById('matchScoreChart').getContext('2d');
-            var matchScore = {{ match_score }};
+            var matchScore = { match_score };
             var chart = new Chart(ctx, {
                 type: 'pie',
                 data: {
