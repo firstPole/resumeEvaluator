@@ -56,7 +56,7 @@
             margin: 5px;
             border-radius: 5px;
         }
-        #tagsList {
+        #tagsList, #nonMatchingTagsList {
             margin-top: 20px;
         }
         .tags-container {
@@ -95,6 +95,8 @@
             <div class="tags-container text-center">
                 <h3>Matched Relevant Tags</h3>
                 <div id="tagsList"></div>
+                <h3>Non-Matching Tags</h3>
+                <div id="nonMatchingTagsList"></div>
             </div>
         </div>
     </div>
@@ -108,83 +110,77 @@
         var currentChart = null;
 
         document.getElementById('evaluationForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
+
             var formData = new FormData(this);
 
-            // Clear previous results
-            document.getElementById('resultArea').style.display = 'none';
-            var tagsList = document.getElementById('tagsList');
-            tagsList.innerHTML = '';
-            var ctx = document.getElementById('matchScoreChart').getContext('2d');
+            $.ajax({
+    url: '/evaluate',
+    type: 'POST',
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function(data) {
+        document.getElementById('resultArea').style.display = 'block';
 
-            // Destroy previous chart instance if it exists
-            if (currentChart) {
-                currentChart.destroy();
-            }
-
-            fetch('/evaluate', {
-                method: 'POST',
-                body: formData
-            }).then(response => response.json())
-              .then(data => {
-                document.getElementById('resultArea').style.display = 'block';
-                var matchScore = Math.round(data.match_score); // Round score to the nearest integer
-                var matchText = 'Match Status';
-
-                // Determine match status
-                if (matchScore > 90) {
-                    matchText = 'Strong Match';
-                } else if (matchScore >= 80 && matchScore <= 90) {
-                    matchText = 'Good Match';
-                }
-
-                // Update match info section
-                document.getElementById('matchInfo').innerHTML = `<div>${matchScore}%</div><div>${matchText}</div>`;
-
-                // Create a new chart
-                currentChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Matched', 'Unmatched'],
-                        datasets: [{
-                            data: [matchScore, 100 - matchScore],
-                            backgroundColor: ['#28a745', '#e0e0e0'],
-                            borderColor: ['#28a745', '#e0e0e0'],
-                            borderWidth: 1
-                        }]
+        if (currentChart) {
+            currentChart.destroy();
+        }
+        var ctx = document.getElementById('matchScoreChart').getContext('2d');
+        currentChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Match', 'No Match'],
+                datasets: [{
+                    label: 'Match Score',
+                    data: [data.match_score, 100 - data.match_score],
+                    backgroundColor: ['#4CAF50', '#FFC107'],
+                    borderColor: ['#333', '#333'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        return tooltipItem.label + ': ' + tooltipItem.raw + '%';
-                                    }
-                                }
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + Math.round(tooltipItem.raw) + '%';
                             }
                         }
                     }
-                });
-
-                // Display relevant tags
-                if (data.relevant_tags && data.relevant_tags.length > 0) {
-                    data.relevant_tags.forEach(function(tag) {
-                        var tagElement = document.createElement('span');
-                        tagElement.className = 'tag';
-                        tagElement.textContent = tag;
-                        tagsList.appendChild(tagElement);
-                    });
-                } else {
-                    tagsList.innerHTML = '<p>No relevant tags found.</p>';
                 }
-              }).catch(error => {
-                console.error('Error:', error);
-              });
+            }
+        });
+
+        document.getElementById('matchInfo').innerText = 'Match Score: ' + data.match_score.toFixed(2) + '%';
+
+        var tagsList = document.getElementById('tagsList');
+        tagsList.innerHTML = '';
+        data.relevant_tags.forEach(function(tag) {
+            var tagElement = document.createElement('span');
+            tagElement.className = 'tag';
+            tagElement.innerText = tag;
+            tagsList.appendChild(tagElement);
+        });
+
+        var nonMatchingTagsList = document.getElementById('nonMatchingTagsList');
+        nonMatchingTagsList.innerHTML = '';
+        data.non_matching_tags.forEach(function(tag) {
+            var tagElement = document.createElement('span');
+            tagElement.className = 'tag';
+            tagElement.innerText = tag;
+            nonMatchingTagsList.appendChild(tagElement);
+        });
+    },
+    error: function(xhr, status, error) {
+        console.error('Error:', status, error);
+    }
+});
+
         });
     </script>
 </body>
