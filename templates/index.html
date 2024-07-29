@@ -4,41 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume Evaluation</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/styles.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        .progress-container {
-            position: relative;
-            margin-top: 20px;
+        .container {
+            margin-top: 50px;
         }
-        .progress-bar {
-            width: 0;
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
         }
-        .info-icon {
-            cursor: pointer;
-            font-size: 1.2em;
-            color: #007bff;
-        }
-        .info-icon:hover {
-            color: #0056b3;
-        }
-        .analysis-section p {
-            font-size: 0.9em;
+        .tag {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-4">Resume Evaluation</h1>
-        <form id="evaluation-form" method="post" enctype="multipart/form-data">
+        <h2 class="text-center">Resume Evaluation</h2>
+        <form id="resume-form">
             <div class="form-group">
-                <label for="resume_file">Upload Resume:</label>
-                <input type="file" class="form-control-file" id="resume_file" name="resume_file" required>
+                <label for="resume_file">Upload Resume (PDF or DOCX):</label>
+                <input type="file" class="form-control-file" id="resume_file" name="resume_file" accept=".pdf,.docx" required>
             </div>
             <div class="form-group">
                 <label for="job_description">Job Description:</label>
@@ -46,127 +37,135 @@
             </div>
             <button type="submit" class="btn btn-primary">Evaluate</button>
         </form>
-        <div class="progress-container mt-4" style="display: none;">
-            <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
-            </div>
-        </div>
-        <div id="results" class="mt-4" style="display: none;">
+
+        <div id="result" style="margin-top: 30px; display: none;">
+            <h3>Evaluation Results</h3>
             <div class="row">
                 <div class="col-md-4">
-                    <h2>Graphs/Charts</h2>
-                    <canvas id="matchScoreChart"></canvas>
+                    <canvas id="matchChart"></canvas>
+                    <p id="matchText"></p>
                 </div>
                 <div class="col-md-4">
-                    <h2>Matching & Non-Matching Tags</h2>
-                    <div id="matching-tags">
-                        <h4>Matching Tags:</h4>
-                        <ul id="matching-tags-list"></ul>
-                    </div>
-                    <div id="non-matching-tags">
-                        <h4>Non-Matching Tags:</h4>
-                        <ul id="non-matching-tags-list"></ul>
-                    </div>
+                    <h4>Matching Skills</h4>
+                    <div class="tags" id="matchingTags"></div>
+                    <h4>Non-Matching Skills</h4>
+                    <div class="tags" id="nonMatchingTags"></div>
                 </div>
                 <div class="col-md-4">
-                    <h2>Analysis</h2>
-                    <div id="analysis">
-                        <div class="analysis-section">
-                            <h4>Language Tone <i class="info-icon fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Pay attention to the language used. Is it formal, casual, or results-oriented?"></i></h4>
-                            <p id="language-tone"></p>
-                        </div>
-                        <div class="analysis-section">
-                            <h4>Emphasis on Teamwork or Individual Contribution <i class="info-icon fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="A focus on collaboration and teamwork often indicates a collaborative environment."></i></h4>
-                            <p id="teamwork-emphasis"></p>
-                        </div>
-                        <div class="analysis-section">
-                            <h4>Social Responsibility <i class="info-icon fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="If terms like 'sustainability,' 'diversity,' or 'ethics' are frequently used, it suggests a company committed to social responsibility."></i></h4>
-                            <p id="social-responsibility"></p>
-                        </div>
-                        <div class="analysis-section">
-                            <h4>Keyword Density <i class="info-icon fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Certain skills or qualifications might appear more frequently, indicating their importance in the role."></i></h4>
-                            <p id="keyword-density"></p>
-                        </div>
-                    </div>
+                    <h4>Job Analysis</h4>
+                    <p><strong>Language Tone:</strong> <span id="languageTone"></span></p>
+                    <p><strong>Emphasis:</strong> <span id="emphasis"></span></p>
+                    <p><strong>Social Responsibility:</strong> <span id="socialResponsibility"></span></p>
+                    <h5>Keyword Density</h5>
+                    <ul id="keywordDensity"></ul>
                 </div>
             </div>
+            <button id="optimizeResumeButton" class="btn btn-success">Generate Updated Resume</button>
         </div>
     </div>
 
     <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip(); 
+        document.getElementById('resume-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
 
-            $('#evaluation-form').on('submit', function(event){
-                event.preventDefault();
-                var formData = new FormData(this);
+            const formData = new FormData();
+            formData.append('resume_file', document.getElementById('resume_file').files[0]);
+            formData.append('job_description', document.getElementById('job_description').value);
 
-                $('.progress-container').show();
-                $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+            const response = await fetch('/evaluate', {
+                method: 'POST',
+                body: formData
+            });
 
-                $.ajax({
-                    url: '/evaluate',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    xhr: function() {
-                        var xhr = new window.XMLHttpRequest();
-                        xhr.upload.addEventListener('progress', function(e) {
-                            if (e.lengthComputable) {
-                                var percentComplete = Math.round((e.loaded / e.total) * 100);
-                                $('.progress-bar').css('width', percentComplete + '%').attr('aria-valuenow', percentComplete).text(percentComplete + '%');
-                            }
-                        }, false);
-                        return xhr;
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById('result').style.display = 'block';
+
+                const matchScore = result.match_score;
+                const matchChart = new Chart(document.getElementById('matchChart').getContext('2d'), {
+                    type: 'pie',
+                    data: {
+                        labels: ['Match', 'Mismatch'],
+                        datasets: [{
+                            data: [matchScore, 100 - matchScore],
+                            backgroundColor: ['#4caf50', '#f44336']
+                        }]
                     },
-                    success: function(data) {
-                        $('.progress-container').hide();
-                        $('#results').show();
-                        
-                        // Check if data is available and valid
-                        if (data.match_score && data.relevant_tags && data.non_matching_tags) {
-                            // Update match score chart
-                            var ctx = document.getElementById('matchScoreChart').getContext('2d');
-                            new Chart(ctx, {
-                                type: 'pie',
-                                data: {
-                                    labels: ['Matching', 'Non-Matching'],
-                                    datasets: [{
-                                        data: [data.match_score, 100 - data.match_score],
-                                        backgroundColor: ['#4CAF50', '#FF5722']
-                                    }]
-                                },
-                                options: {
-                                    responsive: true
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return tooltipItem.raw.toFixed(2) + '%';
+                                    }
                                 }
-                            });
-
-                            // Update tags lists
-                            $('#matching-tags-list').empty();
-                            data.relevant_tags.forEach(function(tag){
-                                $('#matching-tags-list').append('<li>' + tag + '</li>');
-                            });
-                            $('#non-matching-tags-list').empty();
-                            data.non_matching_tags.forEach(function(tag){
-                                $('#non-matching-tags-list').append('<li>' + tag + '</li>');
-                            });
-
-                            // Update analysis
-                            $('#language-tone').text(data.job_analysis.language_tone);
-                            $('#teamwork-emphasis').text(data.job_analysis.emphasis_teamwork);
-                            $('#social-responsibility').text(data.job_analysis.social_responsibility ? 'Yes' : 'No');
-                            $('#keyword-density').text(JSON.stringify(data.job_analysis.keyword_density, null, 2));
-                        } else {
-                            console.error('Data received from server is not valid:', data);
+                            }
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        $('.progress-container').hide();
-                        console.error('Error during AJAX request:', status, error);
                     }
                 });
-            });
+
+                document.getElementById('matchText').innerText = matchScore >= 90 ? 'Strong Match' : matchScore >= 70 ? 'Good Match' : 'Weak Match';
+
+                const matchingTags = document.getElementById('matchingTags');
+                matchingTags.innerHTML = '';
+                result.relevant_tags.forEach(tag => {
+                    const span = document.createElement('span');
+                    span.className = 'tag';
+                    span.innerText = tag;
+                    matchingTags.appendChild(span);
+                });
+
+                const nonMatchingTags = document.getElementById('nonMatchingTags');
+                nonMatchingTags.innerHTML = '';
+                result.non_matching_tags.forEach(tag => {
+                    const span = document.createElement('span');
+                    span.className = 'tag';
+                    span.innerText = tag;
+                    nonMatchingTags.appendChild(span);
+                });
+
+                document.getElementById('languageTone').innerText = result.job_analysis.language_tone;
+                document.getElementById('emphasis').innerText = result.job_analysis.emphasis_teamwork;
+                document.getElementById('socialResponsibility').innerText = result.job_analysis.social_responsibility ? 'Yes' : 'No';
+
+                const keywordDensity = document.getElementById('keywordDensity');
+                keywordDensity.innerHTML = '';
+                result.job_analysis.keyword_density.forEach(keyword => {
+                    const li = document.createElement('li');
+                    li.innerText = `${keyword[0]} (${keyword[1]})`;
+                    keywordDensity.appendChild(li);
+                });
+            } else {
+                alert(result.error);
+            }
+        });
+
+        document.getElementById('optimizeResumeButton').addEventListener('click', async function () {
+            const response = await fetch('/get-non-matching-tags');
+            const result = await response.json();
+
+            if (response.ok) {
+                const selectedTags = result.non_matching_tags;
+                const response = await fetch('/generate-resume', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ tags: selectedTags })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.location.href = result.download_link;
+                } else {
+                    alert(result.error);
+                }
+            } else {
+                alert(result.error);
+            }
         });
     </script>
 </body>

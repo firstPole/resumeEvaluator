@@ -4,43 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Optimized Resume</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-4">Generate Optimized Resume</h1>
-        <form id="generate-resume-form">
-            <div class="form-group">
-                <label for="tags">Skills to Add:</label>
-                <textarea class="form-control" id="tags" name="tags" rows="5" placeholder="Enter skills to be added (comma separated)"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Generate Resume</button>
-        </form>
-        <div id="generated-resume" class="mt-4" style="display: none;">
-            <a id="download-link" href="#" class="btn btn-success">Download Updated Resume</a>
+        <h2 class="text-center" style="margin-top: 50px;">Optimized Resume</h2>
+        <div class="text-center" style="margin-top: 20px;">
+            <a href="/uploads/{{ unique_id }}.docx" class="btn btn-primary">Download Optimized Resume</a>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script>
-        $('#generate-resume-form').on('submit', function(event){
-            event.preventDefault();
-            var tags = $('#tags').val().split(',').map(function(tag) { return tag.trim(); });
-            $.ajax({
-                url: '/generate-resume',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({tags: tags}),
-                success: function(data) {
-                    if (data.download_link) {
-                        $('#generated-resume').show();
-                        $('#download-link').attr('href', data.download_link);
-                    } else {
-                        alert('Error generating resume.');
-                    }
-                }
-            });
-        });
-    </script>
 </body>
 </html>
