@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,66 +12,95 @@
     <!-- Custom CSS -->
     <style>
         body {
-            background-color: #f0f2f5;
+            background-color: #f7f8fc;
             color: #333;
             margin: 0;
             padding: 0;
+            font-family: 'Arial', sans-serif;
         }
+
         .container {
             margin-top: 30px;
             max-width: 900px;
         }
+
         .card {
             padding: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 30px;
+            border: none;
         }
+
         .btn-custom {
             background-color: #007bff;
             color: white;
+            border-radius: 20px;
+            border: none;
+            transition: background-color 0.3s ease;
         }
+
         .btn-custom:hover {
             background-color: #0056b3;
         }
+
         .chart-container {
             height: 300px;
             width: 300px;
             margin: auto;
         }
+
         .text-highlight {
             font-size: 24px;
             font-weight: bold;
             margin-top: 10px;
         }
+
         #resultArea {
             display: none;
             margin-top: 30px;
         }
+
         .tag {
             display: inline-block;
             background-color: #007bff;
             color: white;
             padding: 5px 10px;
             margin: 5px;
-            border-radius: 5px;
+            border-radius: 20px;
+            font-size: 14px;
         }
-        #tagsList, #nonMatchingTagsList {
+
+        #tagsList,
+        #nonMatchingTagsList {
             margin-top: 20px;
         }
+
         .tags-container {
-            margin-top: 50px;
+            margin-top: 30px;
         }
+
         .match-info {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 20px;
+            color: #007bff;
         }
+
         .row.align-items-center {
             align-items: center;
         }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        form .form-group label {
+            color: #555;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="card">
@@ -78,11 +108,13 @@
             <form id="evaluationForm" action="/evaluate" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="resume_file">Upload Resume (PDF or DOCX):</label>
-                    <input type="file" id="resume_file" name="resume_file" accept=".pdf, .docx" class="form-control" required>
+                    <input type="file" id="resume_file" name="resume_file" accept=".pdf, .docx" class="form-control"
+                        required>
                 </div>
                 <div class="form-group">
                     <label for="job_description">Job Description:</label>
-                    <textarea id="job_description" name="job_description" class="form-control" rows="10" required></textarea>
+                    <textarea id="job_description" name="job_description" class="form-control" rows="10"
+                        required></textarea>
                 </div>
                 <button type="submit" class="btn btn-custom btn-block">Evaluate</button>
             </form>
@@ -117,7 +149,7 @@
     <script>
         var currentChart = null;
 
-        document.getElementById('evaluationForm').addEventListener('submit', function(event) {
+        document.getElementById('evaluationForm').addEventListener('submit', function (event) {
             event.preventDefault();
 
             var formData = new FormData(this);
@@ -128,7 +160,7 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function(data) {
+                success: function (data) {
                     document.getElementById('resultArea').style.display = 'block';
 
                     if (currentChart) {
@@ -143,7 +175,7 @@
                                 label: 'Match Score',
                                 data: [data.match_score, 100 - data.match_score],
                                 backgroundColor: ['#4CAF50', '#FFC107'],
-                                borderColor: ['#333', '#333'],
+                                borderColor: ['#fff', '#fff'],
                                 borderWidth: 1
                             }]
                         },
@@ -155,7 +187,7 @@
                                 },
                                 tooltip: {
                                     callbacks: {
-                                        label: function(tooltipItem) {
+                                        label: function (tooltipItem) {
                                             return tooltipItem.label + ': ' + Math.round(tooltipItem.raw) + '%';
                                         }
                                     }
@@ -168,7 +200,7 @@
 
                     var tagsList = document.getElementById('tagsList');
                     tagsList.innerHTML = '';
-                    data.relevant_tags.forEach(function(tag) {
+                    data.relevant_tags.forEach(function (tag) {
                         var tagElement = document.createElement('span');
                         tagElement.className = 'tag';
                         tagElement.innerText = tag;
@@ -177,18 +209,19 @@
 
                     var nonMatchingTagsList = document.getElementById('nonMatchingTagsList');
                     nonMatchingTagsList.innerHTML = '';
-                    data.non_matching_tags.forEach(function(tag) {
+                    data.non_matching_tags.forEach(function (tag) {
                         var tagElement = document.createElement('span');
                         tagElement.className = 'tag';
                         tagElement.innerText = tag;
                         nonMatchingTagsList.appendChild(tagElement);
                     });
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error:', status, error);
                 }
             });
         });
     </script>
 </body>
+
 </html>
