@@ -1,3 +1,5 @@
 venv/
 uploads/
 .env
+temp/
+tree.txt
