@@ -34,10 +34,9 @@
             background-color: #0056b3;
         }
         .chart-container {
-            position: relative;
-            height: 400px;
-            width: 100%;
-            margin-bottom: 20px; /* Add space below the chart */
+            height: 300px;
+            width: 300px;
+            margin: auto;
         }
         .text-highlight {
             font-size: 24px;
@@ -60,12 +59,15 @@
             margin-top: 20px;
         }
         .tags-container {
-            margin-top: 50px; /* Add space above the tags list */
+            margin-top: 50px;
         }
         .match-info {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 20px;
+        }
+        .row.align-items-center {
+            align-items: center;
         }
     </style>
 </head>
@@ -89,14 +91,20 @@
         <div id="resultArea" class="card">
             <h2 class="text-center">Evaluation Result</h2>
             <div class="match-info text-center" id="matchInfo">Match Info</div>
-            <div class="chart-container">
-                <canvas id="matchScoreChart"></canvas>
-            </div>
-            <div class="tags-container text-center">
-                <h3>Matched Relevant Tags</h3>
-                <div id="tagsList"></div>
-                <h3>Non-Matching Tags</h3>
-                <div id="nonMatchingTagsList"></div>
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center">
+                    <div class="chart-container">
+                        <canvas id="matchScoreChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="tags-container">
+                        <h3>Matched Relevant Tags</h3>
+                        <div id="tagsList"></div>
+                        <h3>Non-Matching Tags</h3>
+                        <div id="nonMatchingTagsList"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -115,72 +123,71 @@
             var formData = new FormData(this);
 
             $.ajax({
-    url: '/evaluate',
-    type: 'POST',
-    data: formData,
-    processData: false,
-    contentType: false,
-    success: function(data) {
-        document.getElementById('resultArea').style.display = 'block';
+                url: '/evaluate',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    document.getElementById('resultArea').style.display = 'block';
 
-        if (currentChart) {
-            currentChart.destroy();
-        }
-        var ctx = document.getElementById('matchScoreChart').getContext('2d');
-        currentChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Match', 'No Match'],
-                datasets: [{
-                    label: 'Match Score',
-                    data: [data.match_score, 100 - data.match_score],
-                    backgroundColor: ['#4CAF50', '#FFC107'],
-                    borderColor: ['#333', '#333'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                return tooltipItem.label + ': ' + Math.round(tooltipItem.raw) + '%';
+                    if (currentChart) {
+                        currentChart.destroy();
+                    }
+                    var ctx = document.getElementById('matchScoreChart').getContext('2d');
+                    currentChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Match', 'No Match'],
+                            datasets: [{
+                                label: 'Match Score',
+                                data: [data.match_score, 100 - data.match_score],
+                                backgroundColor: ['#4CAF50', '#FFC107'],
+                                borderColor: ['#333', '#333'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            return tooltipItem.label + ': ' + Math.round(tooltipItem.raw) + '%';
+                                        }
+                                    }
+                                }
                             }
                         }
-                    }
+                    });
+
+                    document.getElementById('matchInfo').innerText = 'Match Score: ' + data.match_score.toFixed(2) + '%';
+
+                    var tagsList = document.getElementById('tagsList');
+                    tagsList.innerHTML = '';
+                    data.relevant_tags.forEach(function(tag) {
+                        var tagElement = document.createElement('span');
+                        tagElement.className = 'tag';
+                        tagElement.innerText = tag;
+                        tagsList.appendChild(tagElement);
+                    });
+
+                    var nonMatchingTagsList = document.getElementById('nonMatchingTagsList');
+                    nonMatchingTagsList.innerHTML = '';
+                    data.non_matching_tags.forEach(function(tag) {
+                        var tagElement = document.createElement('span');
+                        tagElement.className = 'tag';
+                        tagElement.innerText = tag;
+                        nonMatchingTagsList.appendChild(tagElement);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', status, error);
                 }
-            }
-        });
-
-        document.getElementById('matchInfo').innerText = 'Match Score: ' + data.match_score.toFixed(2) + '%';
-
-        var tagsList = document.getElementById('tagsList');
-        tagsList.innerHTML = '';
-        data.relevant_tags.forEach(function(tag) {
-            var tagElement = document.createElement('span');
-            tagElement.className = 'tag';
-            tagElement.innerText = tag;
-            tagsList.appendChild(tagElement);
-        });
-
-        var nonMatchingTagsList = document.getElementById('nonMatchingTagsList');
-        nonMatchingTagsList.innerHTML = '';
-        data.non_matching_tags.forEach(function(tag) {
-            var tagElement = document.createElement('span');
-            tagElement.className = 'tag';
-            tagElement.innerText = tag;
-            nonMatchingTagsList.appendChild(tagElement);
-        });
-    },
-    error: function(xhr, status, error) {
-        console.error('Error:', status, error);
-    }
-});
-
+            });
         });
     </script>
 </body>
