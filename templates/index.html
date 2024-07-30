@@ -105,6 +105,18 @@
         .text-small {
             font-size: 12px;
         }
+        .keyword-density-chart {
+            width: 100%;
+            height: 300px;
+        }
+        .keyword-bar {
+            background-color: #007bff;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -153,116 +165,112 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="text-center">Job Analysis</h4>
-                                <p><strong>Language Tone:</strong> <span id="languageTone">N/A</span></p>
-                                <p><strong>Emphasis:</strong> <span id="emphasis">N/A</span></p>
-                                <p><strong>Social Responsibility:</strong> <span id="socialResponsibility">N/A</span></p>
-                                <h5 class="text-center mt-4">Keyword Density</h5>
-                                <ul id="keywordDensity" class="list-unstyled"></ul>
+                                <p><strong>Language Tone:</strong> <span id="languageTone"></span></p>
+                                <p><strong>Emphasis:</strong> <span id="emphasis"></span></p>
+                                <p><strong>Social Responsibility:</strong> <span id="socialResponsibility"></span></p>
+                                <div id="keywordDensity"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button id="optimizeResumeButton" class="btn btn-success">Generate Updated Resume</button>
             </div>
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        document.getElementById('resume-form').addEventListener('submit', async function (e) {
-            e.preventDefault();
-    
-            document.getElementById('progress-bar').style.display = 'block';
-            const progressBar = document.getElementById('progress-bar-inner');
-            const progressText = document.getElementById('progress-text');
-            progressBar.style.width = '0%';
-            progressText.innerText = 'Evaluating...';
-    
-            const formData = new FormData();
-            formData.append('resume_file', document.getElementById('resume_file').files[0]);
-            formData.append('job_description', document.getElementById('job_description').value);
-    
-            try {
-                const response = await fetch('/evaluate', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-    
-                console.log('LLM Response:', result);  // Debug print
-    
-                document.getElementById('progress-bar').style.display = 'none';
-    
-                if (response.ok) {
-                    document.getElementById('result').style.display = 'block';
-    
-                    const matchScore = result.match_score || 0;
-                    const matchChart = new Chart(document.getElementById('matchChart').getContext('2d'), {
-                        type: 'pie',
-                        data: {
-                            labels: ['Matching Skills', 'Non-Matching Skills'],
-                            datasets: [{
-                                data: [matchScore, 100 - matchScore],
-                                backgroundColor: ['#4caf50', '#f44336']
-                            }]
-                        },
-                        options: {
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '%';
+        $(document).ready(function() {
+            $('#resume-form').on('submit', function(event) {
+                event.preventDefault();
+
+                $('#progress-bar').show();
+
+                var formData = new FormData(this);
+                $.ajax({
+                    url: '/evaluate',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $('#progress-bar').hide();
+                        $('#result').show();
+
+                        var matchScore = response.match_score;
+                        var matchingTags = response.relevant_tags;
+                        var nonMatchingTags = response.non_matching_tags;
+                        var keywordDensity = response.job_analysis.keyword_density;
+                        // var matchingTagOccurrences = response.job_analysis.matching_tag_occurrences;
+                        // var nonMatchingTagOccurrences = response.job_analysis.non_matching_tag_occurrences;
+
+                        // Display match score and chart
+                        var ctx = document.getElementById('matchChart').getContext('2d');
+                        var matchChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: ['Matching Skills', 'Non-Matching Skills'],
+                                datasets: [{
+                                    data: [matchingTags.length, nonMatchingTags.length],
+                                    backgroundColor: ['#007bff', '#dc3545'],
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(tooltipItem) {
+                                                var label = tooltipItem.label || '';
+                                                var value = tooltipItem.raw || 0;
+                                                var percentage = Math.round(value / (matchingTags.length + nonMatchingTags.length) * 100);
+                                                return label + ': ' + value + ' (' + percentage + '%)';
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                    });
-    
-                    document.getElementById('matchScoreText').innerText = `Match Score: ${matchScore.toFixed(2)}%`;
-                    document.getElementById('matchingTags').innerHTML = result.relevant_tags.map(tag => `<div class="tag">${tag}</div>`).join('');
-                    document.getElementById('non-matching-tags').innerHTML = result.non_matching_tags.map(tag => `<div class="tag non-matching">${tag}</div>`).join('');
-                    document.getElementById('languageTone').innerText = result.job_analysis.language_tone;
-                    document.getElementById('emphasis').innerText = result.job_analysis.emphasis_teamwork;
-                    document.getElementById('socialResponsibility').innerText = result.job_analysis.social_responsibility ? 'Yes' : 'No';
-                    document.getElementById('keywordDensity').innerHTML = result.job_analysis.keyword_density.map(([word, freq]) => `<li>${word}: ${freq}</li>`).join('');
-                    
-                    // Add event listener for the Generate Updated Resume button
-                    document.getElementById('optimizeResumeButton').addEventListener('click', async function () {
-                        console.log("Generate Updated Resume button clicked");  // Debug print
-    
-                        const selectedTags = Array.from(document.querySelectorAll('#non-matching-tags .tag')).map(tag => tag.textContent.trim());
-                        console.log('Selected tags for update:', selectedTags);  // Debug print
-    
-                        const response = await fetch('/generate-updated-resume', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            },
-                            body: new URLSearchParams({
-                                'selected_tags': selectedTags
-                            })
                         });
-                        
-                        const result = await response.json();
-                        console.log('Generate Updated Resume response:', result);  // Debug print
-    
-                        if (response.ok) {
-                            window.location.href = result.download_link;
-                        } else {
-                            alert('Error generating updated resume.');
-                        }
-                    });
-                } else {
-                    alert('Error evaluating resume.');
-                }
-            } catch (error) {
-                console.error('Error during evaluation:', error);
+
+                        $('#matchScoreText').text('Match Score: ' + matchScore);
+                        $('#matchText').text(matchScore > 90 ? 'Strong Match' : matchScore > 70 ? 'Good Match' : 'Weak Match');
+
+                        // Display matching and non-matching tags
+                        $('#matchingTags').empty();
+                        $('#non-matching-tags').empty();
+                        matchingTags.forEach(function(tag) {
+                            $('#matchingTags').append('<div class="tag">' + tag + '</div>');
+                        });
+                        nonMatchingTags.forEach(function(tag) {
+                            $('#non-matching-tags').append('<div class="tag non-matching">' + tag + '</div>');
+                        });
+
+                        // Display job analysis
+                        $('#languageTone').text(response.job_analysis.language_tone);
+                        $('#emphasis').text(response.job_analysis.emphasis);
+                        $('#socialResponsibility').text(response.job_analysis.social_responsibility);
+
+                        // Display keyword density
+                        $('#keywordDensity').empty();
+                        keywordDensity.forEach(function(item) {
+                            $('#keywordDensity').append('<div class="keyword-bar">' + item.keyword + ': ' + item.density + '</div>');
+                        });
+
+                        // Display keyword occurrences
+                        //displayKeywordOccurrences(matchingTagOccurrences, nonMatchingTagOccurrences);
+                    }
+                });
+            });
+
+            function displayKeywordOccurrences(matchingTagOccurrences, nonMatchingTagOccurrences) {
+                // Optionally, you can format and display the keyword occurrences as needed
+                console.log('Matching Tag Occurrences:', matchingTagOccurrences);
+                console.log('Non-Matching Tag Occurrences:', nonMatchingTagOccurrences);
             }
         });
     </script>
-    
 </body>
 </html>

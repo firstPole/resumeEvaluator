@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, jsonify, session, send_from_directory
 import spacy
-import openai
+import openai, io
 import os
 import uuid
 import json
@@ -14,9 +14,20 @@ import PyPDF2
 from textblob import TextBlob
 from nltk.tokenize import word_tokenize
 from collections import Counter
+from nltk.corpus import stopwords
+from dotenv import load_dotenv
+import secrets
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = ''  # Required for session management
+
+# Set the secret key from environment variables
+app.secret_key = os.getenv('SECRET_KEY') or secrets.token_hex(16)
+
+# Set your OpenAI API key from environment variables
+openai.api_key = os.getenv('OPENAI_API_KEY', '')
 
 # Load the spaCy model for entity extraction
 nlp = spacy.load("en_core_web_md")
@@ -25,8 +36,9 @@ nlp = spacy.load("en_core_web_md")
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 bert_model = BertModel.from_pretrained('bert-base-uncased')
 
-# Set your OpenAI API key
-openai.api_key = ''
+# Ensure NLTK stopwords are downloaded
+import nltk
+nltk.download('stopwords')
 
 def extract_text_from_docx(file_stream):
     doc = Document(file_stream)
@@ -73,8 +85,9 @@ def filter_relevant_skills(matching_tags, non_matching_tags):
     return non_matching_tags
 
 def get_keyword_density(text):
+    stop_words = set(stopwords.words('english'))
     tokens = word_tokenize(text.lower())
-    tokens = [token for token in tokens if token.isalnum()]
+    tokens = [token for token in tokens if token.isalnum() and token not in stop_words]
     frequency = Counter(tokens)
     return frequency.most_common(8)
 
@@ -99,6 +112,18 @@ def analyze_job_description(text):
         "keyword_density": keyword_density
     }
 
+def count_tag_occurrences(text, tags):
+    stop_words = set(stopwords.words('english'))
+    tokens = word_tokenize(text.lower())
+    tokens = [token for token in tokens if token.isalnum() and token not in stop_words]
+    token_counts = Counter(tokens)
+    
+    tag_occurrences = {}
+    for tag in tags:
+        tag_occurrences[tag] = token_counts.get(tag.lower(), 0)
+    
+    return tag_occurrences
+
 def update_resume_with_tags_using_llm(resume_text, selected_tags):
     prompt = (
         f"Here is a resume:\n\n{resume_text}\n\n"
@@ -119,6 +144,24 @@ def update_resume_with_tags_using_llm(resume_text, selected_tags):
 
     updated_resume_text = response.choices[0].message['content'].strip()
     return updated_resume_text
+
+def get_skill_use_cases_using_llm(tags):
+    prompt = (
+        f"Here are some skills:\n{', '.join(tags)}\n\n"
+        f"For each skill, provide a real-world use case or example in 2-3 lines."
+    )
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a knowledgeable assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=1500,
+        temperature=0.7
+    )
+
+    return response.choices[0].message['content'].strip()
 
 def save_text_to_docx(text, path):
     doc = Document()
@@ -158,10 +201,24 @@ def evaluate_resume():
     
     missing_skills = job_skills - resume_skills
     matched_skills = job_skills & resume_skills
-    
+
     missing_skills = filter_relevant_skills(matched_skills, list(missing_skills))
 
     job_analysis = analyze_job_description(job_description)
+    
+    # Include keyword density in the response
+    # keyword_density = job_analysis.get('keyword_density', [])
+    keyword_density = []
+    # Get occurrences of matching and non-matching tags
+    matching_tag_occurrences = count_tag_occurrences(job_description, list(matched_skills))
+    non_matching_tag_occurrences = count_tag_occurrences(job_description, list(missing_skills))
+
+    # Convert occurrences to the required format and append to keyword_density
+    for keyword, count in matching_tag_occurrences.items():
+        keyword_density.append({"keyword": keyword, "density": count})
+    
+    for keyword, count in non_matching_tag_occurrences.items():
+        keyword_density.append({"keyword": keyword, "density": count})
 
     session['unique_id'] = str(uuid.uuid4())
     session['resume_text'] = resume_text
@@ -171,46 +228,41 @@ def evaluate_resume():
         'match_score': match_score,
         'relevant_tags': list(matched_skills),
         'non_matching_tags': list(missing_skills),
-        'job_analysis': job_analysis
+        'job_analysis': {
+            'language_tone': job_analysis['language_tone'],
+            'emphasis': job_analysis['emphasis_teamwork'],
+            'social_responsibility': job_analysis['social_responsibility'],
+            'keyword_density': keyword_density  # Include keyword density here
+            
+        }
     })
 
-@app.route('/optimize-resume')
-def optimize_resume():
-    return render_template('optimized_resume.html')
 
-@app.route('/get-non-matching-tags')
-def get_non_matching_tags():
-    non_matching_tags = session.get('missing_skills', [])
-    return jsonify({
-        'non_matching_tags': non_matching_tags
-    })
 
-@app.route('/generate-resume', methods=['POST'])
-def generate_resume():
+
+@app.route('/generate-updated-resume', methods=['POST'])
+def generate_updated_resume():
     try:
+        print("inside generate")
         selected_tags = request.json.get('tags', [])
         resume_text = session.get('resume_text', '')
-
+        
+        if not resume_text.strip():
+            return jsonify({'error': 'No resume text found.'}), 400
+        
         updated_resume_text = update_resume_with_tags_using_llm(resume_text, selected_tags)
         
-        if not updated_resume_text.strip():
-            return jsonify({'error': 'Generated resume content is empty.'}), 400
-
-        unique_id = session['unique_id']
-        updated_resume_path = os.path.join('uploads', f'updated_resume_{unique_id}.docx')
-        save_text_to_docx(updated_resume_text, updated_resume_path)
-
-        return jsonify({'download_link': f'/uploads/updated_resume_{unique_id}.docx'})
+        output_file_path = f"static/updated_resume_{session['unique_id']}.docx"
+        save_text_to_docx(updated_resume_text, output_file_path)
+        
+        return jsonify({'file_path': output_file_path})
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        print(f"Error: {e}")
+        return jsonify({'error': 'An error occurred while generating the updated resume.'}), 500
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory('uploads', filename)
+@app.route('/static/<path:filename>')
+def download_file(filename):
+    return send_from_directory('static', filename)
 
 if __name__ == '__main__':
-    if not os.path.exists('temp'):
-        os.makedirs('temp')
-    if not os.path.exists('uploads'):
-        os.makedirs('uploads')
     app.run(debug=True)
