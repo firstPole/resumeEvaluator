@@ -215,10 +215,12 @@ def evaluate_resume():
 
     # Convert occurrences to the required format and append to keyword_density
     for keyword, count in matching_tag_occurrences.items():
-        keyword_density.append({"keyword": keyword, "density": count})
+        if count > 0:
+            keyword_density.append({"keyword": keyword, "density": count})
     
     for keyword, count in non_matching_tag_occurrences.items():
-        keyword_density.append({"keyword": keyword, "density": count})
+        if count > 0:
+            keyword_density.append({"keyword": keyword, "density": count})
 
     session['unique_id'] = str(uuid.uuid4())
     session['resume_text'] = resume_text
