@@ -30,39 +30,38 @@
 
 /* Container for the progress bar */
 .progress-container {
-    position: relative;
-    height: 30px;
-    width: 100%;
-    background-color: #e0e0e0; /* Light grey background */
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: none; /* Hidden by default */
-}
+            position: relative;
+            height: 30px;
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
 
-/* Inner progress bar */
-.progress-bar {
-    height: 100%;
-    width: 0; /* Default width, will be set dynamically */
-    background: linear-gradient(90deg, #007bff, #0056b3); /* Gradient from light to dark blue */
-    color: white;
-    text-align: center;
-    line-height: 30px; /* Center text vertically */
-    font-weight: bold;
-    border-radius: 10px;
-    transition: width 0.4s ease-in-out;
-}
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: width 0.4s ease-in-out;
+        }
 
-/* Text inside the progress bar */
-.progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #fff;
-    font-weight: bold;
-    font-size: 14px;
-}
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
 
 .tags {
     display: flex;
@@ -154,6 +153,10 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.keyword-bar:hover {
+    background-color: #306191; /* 002244 Darker navy blue on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
 h2, h3, h4 {
     font-weight: 600;
 }
@@ -183,7 +186,9 @@ h2, h3, h4 {
 <body>
     <div class="container">
         <h2 class="text-center">AI Powered Resume Evaluation</h2>
-       
+        <div class="card">
+            <div class="card-body">
+
         <form id="resume-form">
             <div class="form-group">
                 <label for="resume_file" class="text-center-strong">Upload Resume (PDF or DOCX):</label>
@@ -198,8 +203,12 @@ h2, h3, h4 {
                 <div class="progress-bar" id="progress-bar-inner">
                     <span class="progress-text" id="progress-text">Evaluating...</span>
                 </div>
-            </div>
+                </div>
+
         </form>
+        </div>
+        </div>
+
 
         <div id="result" class="card" style="display: none;">
             <div class="card-body">
@@ -275,7 +284,24 @@ h2, h3, h4 {
             $('#resume-form').on('submit', function(event) {
                 event.preventDefault();
 
-                $('#progress-bar').show();
+                           const progressBarContainer = document.getElementById('progress-bar');
+            const progressBarInner = document.getElementById('progress-bar-inner');
+            const progressText = document.getElementById('progress-text');
+
+            progressBarContainer.style.display = 'block';
+
+            // Simulate progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                if (progress < 100) {
+                    progress += 10;
+                    progressBarInner.style.width = progress + '%';
+                    progressText.textContent = progress + '%';
+                } else {
+                    clearInterval(interval);
+                    progressText.textContent = 'Evaluation Complete!';
+                }
+            }, 200);
 
                 var formData = new FormData(this);
                 $.ajax({
