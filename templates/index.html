@@ -89,9 +89,11 @@
             font-size: 14px;
             max-width: 200px;
             left: 0;
-            top: 20px;
+            top: 25px; /* Adjusted for better visibility */
+            white-space: nowrap;
         }
-        .tooltip-icon:hover .tooltip-content {
+        .tooltip-icon:hover .tooltip-content,
+        .tooltip-content:hover {
             display: block;
         }
         #optimizeResumeButton {
@@ -154,9 +156,13 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="text-center">Matching Skills</h4>
+                                <h4 class="text-center">Matching Skills <span class="tooltip-icon">ℹ️
+                                    <div class="tooltip-content">Skills that match the job description requirements.</div>
+                                </span></h4>
                                 <div class="tags" id="matchingTags"></div>
-                                <h4 class="text-center mt-4">Non-Matching Skills</h4>
+                                <h4 class="text-center mt-4">Non-Matching Skills <span class="tooltip-icon">ℹ️
+                                    <div class="tooltip-content">Skills that do not match the job description requirements.</div>
+                                </span></h4>
                                 <div class="tags" id="non-matching-tags"></div>
                             </div>
                         </div>
@@ -165,10 +171,35 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="text-center">Job Analysis</h4>
-                                <p><strong>Language Tone:</strong> <span id="languageTone"></span></p>
-                                <p><strong>Emphasis:</strong> <span id="emphasis"></span></p>
-                                <p><strong>Social Responsibility:</strong> <span id="socialResponsibility"></span></p>
+                                <p></p>
+                                <strong>Language Tone:</strong><span class="tooltip-icon">ℹ️
+                                    <div class="tooltip-content">The overall tone used in the job description (formal, casual, etc.).</div>
+                                    <div id="languageTone"></div>
+                                </span>
+                                
+                                <p></p>
+                               
+                                <strong>Emphasis:</strong><span class="tooltip-icon">ℹ️
+                                    <div class="tooltip-content">Whether the job description emphasizes teamwork or individual contribution.</div>
+                                    <div id="emphasis"></div>
+                                </span>
+                                
+                                <p></p>
+                               
+                                <strong>Social Responsibility:</strong><span class="tooltip-icon">ℹ️
+                                    <div class="tooltip-content">The company’s commitment to social responsibility, such as sustainability and diversity.</div>
+                                    <div id="socialResponsibility"></div>
+                                </span>
+                               
+                                <p></p>
+                               
+                                <strong>Keyword Density:</strong><span class="tooltip-icon">ℹ️
+                                    <div class="tooltip-content">The company’s commitment to social responsibility, such as sustainability and diversity.</div>
+                                </span>
                                 <div id="keywordDensity"></div>
+                                <p></p>
+                               
+                                
                             </div>
                         </div>
                     </div>
@@ -201,8 +232,6 @@
                         var matchingTags = response.relevant_tags;
                         var nonMatchingTags = response.non_matching_tags;
                         var keywordDensity = response.job_analysis.keyword_density;
-                        // var matchingTagOccurrences = response.job_analysis.matching_tag_occurrences;
-                        // var nonMatchingTagOccurrences = response.job_analysis.non_matching_tag_occurrences;
 
                         // Display match score and chart
                         var ctx = document.getElementById('matchChart').getContext('2d');
@@ -226,7 +255,7 @@
                                             label: function(tooltipItem) {
                                                 var label = tooltipItem.label || '';
                                                 var value = tooltipItem.raw || 0;
-                                                var percentage = Math.round(value / (matchingTags.length + nonMatchingTags.length) * 100);
+                                                var percentage = (value / (matchingTags.length + nonMatchingTags.length) * 100).toFixed(2);
                                                 return label + ': ' + value + ' (' + percentage + '%)';
                                             }
                                         }
@@ -235,41 +264,41 @@
                             }
                         });
 
-                        $('#matchScoreText').text('Match Score: ' + matchScore);
-                        $('#matchText').text(matchScore > 90 ? 'Strong Match' : matchScore > 70 ? 'Good Match' : 'Weak Match');
+                        $('#matchScoreText').text('Matching Score: ' + matchScore + '%');
+                        $('#matchText').text(matchScore > 90 ? 'Strong Match' : (matchScore > 70 ? 'Good Match' : 'Weak Match'));
 
                         // Display matching and non-matching tags
                         $('#matchingTags').empty();
-                        $('#non-matching-tags').empty();
                         matchingTags.forEach(function(tag) {
                             $('#matchingTags').append('<div class="tag">' + tag + '</div>');
                         });
+
+                        $('#non-matching-tags').empty();
                         nonMatchingTags.forEach(function(tag) {
                             $('#non-matching-tags').append('<div class="tag non-matching">' + tag + '</div>');
                         });
+
+                       // Display keyword density
+                       $('#keywordDensity').empty();
+                        keywordDensity.forEach(function(item) {
+                            $('#keywordDensity').append('<div class="keyword-bar" style="width: ' + item.percentage + '%;">' + item.keyword + ': ' + item.density + '</div>');
+                        });
+
 
                         // Display job analysis
                         $('#languageTone').text(response.job_analysis.language_tone);
                         $('#emphasis').text(response.job_analysis.emphasis);
                         $('#socialResponsibility').text(response.job_analysis.social_responsibility);
-
-                        // Display keyword density
-                        $('#keywordDensity').empty();
-                        keywordDensity.forEach(function(item) {
-                            $('#keywordDensity').append('<div class="keyword-bar">' + item.keyword + ': ' + item.density + '</div>');
-                        });
-
-                        // Display keyword occurrences
-                        //displayKeywordOccurrences(matchingTagOccurrences, nonMatchingTagOccurrences);
                     }
                 });
             });
 
-            function displayKeywordOccurrences(matchingTagOccurrences, nonMatchingTagOccurrences) {
-                // Optionally, you can format and display the keyword occurrences as needed
-                console.log('Matching Tag Occurrences:', matchingTagOccurrences);
-                console.log('Non-Matching Tag Occurrences:', nonMatchingTagOccurrences);
-            }
+            // Tooltip logic
+            $('.tooltip-icon').hover(function() {
+                $(this).find('.tooltip-content').show();
+            }, function() {
+                $(this).find('.tooltip-content').hide();
+            });
         });
     </script>
 </body>
