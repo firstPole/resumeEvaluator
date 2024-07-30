@@ -5,13 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Optimized Resume</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h2 class="text-center" style="margin-top: 50px;">Optimized Resume</h2>
-        <div class="text-center" style="margin-top: 20px;">
-            <a href="/uploads/{{ unique_id }}.docx" class="btn btn-primary">Download Optimized Resume</a>
+    <div class="container mt-4">
+        <h1 class="text-center">Optimized Resume</h1>
+        <p class="text-center">Your resume has been updated with the selected skills. Click below to download it.</p>
+        <div class="text-center">
+            <a id="download-link" href="#" class="btn btn-primary">Download Updated Resume</a>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/get-non-matching-tags')
+            .then(response => response.json())
+            .then(data => {
+                const downloadLink = document.getElementById('download-link');
+                if (data.non_matching_tags.length > 0) {
+                    downloadLink.href = '/uploads/updated_resume_' + data.non_matching_tags[0] + '.docx';
+                } else {
+                    downloadLink.style.display = 'none';
+                    alert('No updated resume available.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 </html>

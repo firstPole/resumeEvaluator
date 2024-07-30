@@ -3,170 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Evaluation</title>
+    <title>AI Powered Resume Evaluation</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
         .container {
             margin-top: 50px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .progress-container {
+            position: relative;
+            height: 30px;
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none; /* Hidden by default */
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: width 0.4s ease-in-out;
+        }
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-weight: bold;
         }
         .tags {
             display: flex;
             flex-wrap: wrap;
+            gap: 5px;
+            overflow: hidden; /* Prevent overlap */
         }
         .tag {
             background-color: #007bff;
             color: white;
             padding: 5px 10px;
-            margin: 5px;
             border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer; /* Change cursor to pointer for clickable tags */
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+        .tag.non-matching {
+            background-color: #dc3545;
+        }
+        .tag.selected {
+            border: 2px solid #fff; /* Highlight selected tags with a border */
+            background-color: #f44336; /* Change background color when selected */
+        }
+        .tooltip-icon {
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 5px;
+            color: #007bff;
+            position: relative;
+        }
+        .tooltip-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 5px;
+            z-index: 1000;
+            border-radius: 5px;
+            font-size: 14px;
+            max-width: 200px;
+            left: 0;
+            top: 20px;
+        }
+        .tooltip-icon:hover .tooltip-content {
+            display: block;
+        }
+        #optimizeResumeButton {
+            display: block;
+            margin: 20px auto;
+        }
+        .text-center-strong {
+            font-weight: bold;
+            color: #333;
+        }
+        .text-small {
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">Resume Evaluation</h2>
+        <h2 class="text-center">AI Powered Resume Evaluation</h2>
         <form id="resume-form">
             <div class="form-group">
-                <label for="resume_file">Upload Resume (PDF or DOCX):</label>
+                <label for="resume_file" class="text-center-strong">Upload Resume (PDF or DOCX):</label>
                 <input type="file" class="form-control-file" id="resume_file" name="resume_file" accept=".pdf,.docx" required>
             </div>
             <div class="form-group">
-                <label for="job_description">Job Description:</label>
+                <label for="job_description" class="text-center-strong">Job Description:</label>
                 <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Evaluate</button>
-        </form>
-
-        <div id="result" style="margin-top: 30px; display: none;">
-            <h3>Evaluation Results</h3>
-            <div class="row">
-                <div class="col-md-4">
-                    <canvas id="matchChart"></canvas>
-                    <p id="matchText"></p>
-                </div>
-                <div class="col-md-4">
-                    <h4>Matching Skills</h4>
-                    <div class="tags" id="matchingTags"></div>
-                    <h4>Non-Matching Skills</h4>
-                    <div class="tags" id="nonMatchingTags"></div>
-                </div>
-                <div class="col-md-4">
-                    <h4>Job Analysis</h4>
-                    <p><strong>Language Tone:</strong> <span id="languageTone"></span></p>
-                    <p><strong>Emphasis:</strong> <span id="emphasis"></span></p>
-                    <p><strong>Social Responsibility:</strong> <span id="socialResponsibility"></span></p>
-                    <h5>Keyword Density</h5>
-                    <ul id="keywordDensity"></ul>
+            <div id="progress-bar" class="progress-container">
+                <div class="progress-bar" id="progress-bar-inner">
+                    <span class="progress-text" id="progress-text">Evaluating...</span>
                 </div>
             </div>
-            <button id="optimizeResumeButton" class="btn btn-success">Generate Updated Resume</button>
+        </form>
+
+        <div id="result" class="card" style="display: none;">
+            <div class="card-body">
+                <h3 class="text-center">Evaluation Result - <span id="matchText"></span></h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <canvas id="matchChart"></canvas>
+                                <p class="text-center mt-3 text-small" id="matchScoreText"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="text-center">Matching Skills</h4>
+                                <div class="tags" id="matchingTags"></div>
+                                <h4 class="text-center mt-4">Non-Matching Skills</h4>
+                                <div class="tags" id="non-matching-tags"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="text-center">Job Analysis</h4>
+                                <p><strong>Language Tone:</strong> <span id="languageTone">N/A</span></p>
+                                <p><strong>Emphasis:</strong> <span id="emphasis">N/A</span></p>
+                                <p><strong>Social Responsibility:</strong> <span id="socialResponsibility">N/A</span></p>
+                                <h5 class="text-center mt-4">Keyword Density</h5>
+                                <ul id="keywordDensity" class="list-unstyled"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="optimizeResumeButton" class="btn btn-success">Generate Updated Resume</button>
+            </div>
         </div>
     </div>
 
     <script>
         document.getElementById('resume-form').addEventListener('submit', async function (e) {
             e.preventDefault();
-
+    
+            document.getElementById('progress-bar').style.display = 'block';
+            const progressBar = document.getElementById('progress-bar-inner');
+            const progressText = document.getElementById('progress-text');
+            progressBar.style.width = '0%';
+            progressText.innerText = 'Evaluating...';
+    
             const formData = new FormData();
             formData.append('resume_file', document.getElementById('resume_file').files[0]);
             formData.append('job_description', document.getElementById('job_description').value);
-
-            const response = await fetch('/evaluate', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                document.getElementById('result').style.display = 'block';
-
-                const matchScore = result.match_score;
-                const matchChart = new Chart(document.getElementById('matchChart').getContext('2d'), {
-                    type: 'pie',
-                    data: {
-                        labels: ['Match', 'Mismatch'],
-                        datasets: [{
-                            data: [matchScore, 100 - matchScore],
-                            backgroundColor: ['#4caf50', '#f44336']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function (tooltipItem) {
-                                        return tooltipItem.raw.toFixed(2) + '%';
+    
+            try {
+                const response = await fetch('/evaluate', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+    
+                console.log('LLM Response:', result);  // Debug print
+    
+                document.getElementById('progress-bar').style.display = 'none';
+    
+                if (response.ok) {
+                    document.getElementById('result').style.display = 'block';
+    
+                    const matchScore = result.match_score || 0;
+                    const matchChart = new Chart(document.getElementById('matchChart').getContext('2d'), {
+                        type: 'pie',
+                        data: {
+                            labels: ['Matching Skills', 'Non-Matching Skills'],
+                            datasets: [{
+                                data: [matchScore, 100 - matchScore],
+                                backgroundColor: ['#4caf50', '#f44336']
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '%';
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                });
-
-                document.getElementById('matchText').innerText = matchScore >= 90 ? 'Strong Match' : matchScore >= 70 ? 'Good Match' : 'Weak Match';
-
-                const matchingTags = document.getElementById('matchingTags');
-                matchingTags.innerHTML = '';
-                result.relevant_tags.forEach(tag => {
-                    const span = document.createElement('span');
-                    span.className = 'tag';
-                    span.innerText = tag;
-                    matchingTags.appendChild(span);
-                });
-
-                const nonMatchingTags = document.getElementById('nonMatchingTags');
-                nonMatchingTags.innerHTML = '';
-                result.non_matching_tags.forEach(tag => {
-                    const span = document.createElement('span');
-                    span.className = 'tag';
-                    span.innerText = tag;
-                    nonMatchingTags.appendChild(span);
-                });
-
-                document.getElementById('languageTone').innerText = result.job_analysis.language_tone;
-                document.getElementById('emphasis').innerText = result.job_analysis.emphasis_teamwork;
-                document.getElementById('socialResponsibility').innerText = result.job_analysis.social_responsibility ? 'Yes' : 'No';
-
-                const keywordDensity = document.getElementById('keywordDensity');
-                keywordDensity.innerHTML = '';
-                result.job_analysis.keyword_density.forEach(keyword => {
-                    const li = document.createElement('li');
-                    li.innerText = `${keyword[0]} (${keyword[1]})`;
-                    keywordDensity.appendChild(li);
-                });
-            } else {
-                alert(result.error);
-            }
-        });
-
-        document.getElementById('optimizeResumeButton').addEventListener('click', async function () {
-            const response = await fetch('/get-non-matching-tags');
-            const result = await response.json();
-
-            if (response.ok) {
-                const selectedTags = result.non_matching_tags;
-                const response = await fetch('/generate-resume', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ tags: selectedTags })
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    window.location.href = result.download_link;
+                    });
+    
+                    document.getElementById('matchScoreText').innerText = `Match Score: ${matchScore.toFixed(2)}%`;
+                    document.getElementById('matchingTags').innerHTML = result.relevant_tags.map(tag => `<div class="tag">${tag}</div>`).join('');
+                    document.getElementById('non-matching-tags').innerHTML = result.non_matching_tags.map(tag => `<div class="tag non-matching">${tag}</div>`).join('');
+                    document.getElementById('languageTone').innerText = result.job_analysis.language_tone;
+                    document.getElementById('emphasis').innerText = result.job_analysis.emphasis_teamwork;
+                    document.getElementById('socialResponsibility').innerText = result.job_analysis.social_responsibility ? 'Yes' : 'No';
+                    document.getElementById('keywordDensity').innerHTML = result.job_analysis.keyword_density.map(([word, freq]) => `<li>${word}: ${freq}</li>`).join('');
+                    
+                    // Add event listener for the Generate Updated Resume button
+                    document.getElementById('optimizeResumeButton').addEventListener('click', async function () {
+                        console.log("Generate Updated Resume button clicked");  // Debug print
+    
+                        const selectedTags = Array.from(document.querySelectorAll('#non-matching-tags .tag')).map(tag => tag.textContent.trim());
+                        console.log('Selected tags for update:', selectedTags);  // Debug print
+    
+                        const response = await fetch('/generate-updated-resume', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: new URLSearchParams({
+                                'selected_tags': selectedTags
+                            })
+                        });
+                        
+                        const result = await response.json();
+                        console.log('Generate Updated Resume response:', result);  // Debug print
+    
+                        if (response.ok) {
+                            window.location.href = result.download_link;
+                        } else {
+                            alert('Error generating updated resume.');
+                        }
+                    });
                 } else {
-                    alert(result.error);
+                    alert('Error evaluating resume.');
                 }
-            } else {
-                alert(result.error);
+            } catch (error) {
+                console.error('Error during evaluation:', error);
             }
         });
     </script>
+    
 </body>
 </html>
