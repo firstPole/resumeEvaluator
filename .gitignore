@@ -3,3 +3,5 @@ uploads/
 .env
 temp/
 tree.txt
+__pycache__/
+resume_processing.py
