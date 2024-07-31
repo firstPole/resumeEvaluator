@@ -164,3 +164,30 @@ h2, h3, h4 {
     background-color: #8fb1d4; /* Darker navy blue */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
+#reset-button {
+    
+    background-color: #003366; /* Navy blue */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    
+}
+
+/* Hover state */
+#reset-button:hover {
+    background-color: #5a6268; /* Darker gray background */
+    border-color: #545b62; /* Darker gray border */
+}
+
+/* Disabled state */
+#reset-button:disabled {
+    background-color: #e9ecef; /* Light gray background */
+    color: #6c757d; /* Gray text */
+    border-color: #ced4da; /* Light gray border */
+    cursor: not-allowed; /* Not allowed cursor */
+}
