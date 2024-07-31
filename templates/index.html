@@ -1,188 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Powered Resume Evaluation</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-    background-color: #f4f6f9; /* Light grey background */
-    font-family: Arial, sans-serif;
-    color: #333;
-}
-
-.container {
-    margin-top: 50px;
-}
-
-.card {
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.card-body {
-    padding: 20px;
-}
-
-/* Container for the progress bar */
-.progress-container {
-            position: relative;
-            height: 30px;
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0;
-            background: linear-gradient(90deg, #007bff, #0056b3);
-            color: white;
-            text-align: center;
-            line-height: 30px;
-            font-weight: bold;
-            border-radius: 10px;
-            transition: width 0.4s ease-in-out;
-        }
-
-        .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-
-.tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    overflow: hidden; /* Prevent overlap */
-}
-
-.tag {
-    background: #003366; /* Navy blue */
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer; /* Change cursor to pointer for clickable tags */
-    white-space: nowrap; /* Prevent text wrapping */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.tag.non-matching {
-    background: #b0bec5; /* Light grey */
-    
-}
-
-.tag:hover {
-    background-color: #306191; /* 002244 Darker navy blue on hover */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-.tooltip-icon {
-    font-size: 14px;
-    cursor: pointer;
-    margin-left: 5px;
-    color: #003366; /* Navy blue */
-    position: relative;
-}
-
-.tooltip-content {
-    display: none;
-    position: absolute;
-    background-color: #ffffff; /* White */
-    border: 1px solid #ddd;
-    padding: 5px;
-    z-index: 1000;
-    border-radius: 5px;
-    font-size: 12px;
-    max-width: 200px;
-    left: 0;
-    top: 25px; /* Adjusted for better visibility */
-    white-space: nowrap;
-}
-
-.tooltip-icon:hover .tooltip-content,
-.tooltip-content:hover {
-    display: block;
-}
-
-#optimizeResumeButton {
-    display: block;
-    margin: 20px auto;
-}
-
-.text-center-strong {
-    font-weight: bold;
-    color: #333;
-    font-size: 16px;
-}
-
-.text-small {
-    font-size: 12px;
-}
-
-.keyword-density-chart {
-    width: 100%;
-    height: 300px;
-}
-
-.keyword-bar {
-    background-color: #ebdada34; 
-    color: rgb(0, 0, 0);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer; /* Change cursor to pointer for clickable tags */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.keyword-bar:hover {
-    background-color: #306191; /* 002244 Darker navy blue on hover */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-h2, h3, h4 {
-    font-weight: 600;
-}
-
-.evaluate-button {
-    background-color: #003366; /* Navy blue */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
-    display: inline-block;
-}
-
-.evaluate-button:hover {
-    background-color: #8fb1d4; /* Darker navy blue */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-    </style>
-    
-    
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Resume Evaluation</title>
+        <!-- Link to external CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <!-- Include Bootstrap CSS (if needed) -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Include jQuery library -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Include Chart.js library -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </head>
 <body>
     <div class="container">
         <h2 class="text-center">AI Powered Resume Evaluation</h2>
@@ -240,6 +72,11 @@ h2, h3, h4 {
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="text-center">Job Analysis</h4>
+                                <strong>Resume Sentiment:</strong><span class="tooltip-icon">ℹ️
+                                    <div class="tooltip-content">Overall Sentiment analysis of your Resume</div>
+                                    <div id="sentiment-analysis-result"></div>
+                                </span>
+                                
                                 <p></p>
                                 <strong>Language Tone:</strong><span class="tooltip-icon">ℹ️
                                     <div class="tooltip-content">The overall tone used in the job description (formal, casual, etc.).</div>
@@ -277,110 +114,7 @@ h2, h3, h4 {
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#resume-form').on('submit', function(event) {
-                event.preventDefault();
-
-                           const progressBarContainer = document.getElementById('progress-bar');
-            const progressBarInner = document.getElementById('progress-bar-inner');
-            const progressText = document.getElementById('progress-text');
-
-            progressBarContainer.style.display = 'block';
-
-            // Simulate progress
-            let progress = 0;
-            const interval = setInterval(() => {
-                if (progress < 100) {
-                    progress += 10;
-                    progressBarInner.style.width = progress + '%';
-                    progressText.textContent = progress + '%';
-                } else {
-                    clearInterval(interval);
-                    progressText.textContent = 'Evaluation Complete!';
-                }
-            }, 200);
-
-                var formData = new FormData(this);
-                $.ajax({
-                    url: '/evaluate',
-                    type: 'POST',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        $('#progress-bar').hide();
-                        $('#result').show();
-
-                        var matchScore = response.match_score;
-                        var matchingTags = response.relevant_tags;
-                        var nonMatchingTags = response.non_matching_tags;
-                        var keywordDensity = response.job_analysis.keyword_density;
-
-                        // Display match score and chart
-                        var ctx = document.getElementById('matchChart').getContext('2d');
-                        var matchChart = new Chart(ctx, {
-                            type: 'pie',
-                            data: {
-                                labels: ['Matching Skills', 'Non-Matching Skills'],
-                                datasets: [{
-                                    data: [matchingTags.length, nonMatchingTags.length],
-                                    backgroundColor: ['#002244', '#b0bec5'],
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: function(tooltipItem) {
-                                                var label = tooltipItem.label;
-                                                var value = tooltipItem.raw;
-                                                return label + ': ' + value;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        });
-
-                        var matchText = matchScore > 90 ? 'Strong Match' :
-                                        matchScore >= 70 ? 'Good Match' : 'Weak Match';
-                        $('#matchText').text(matchText);
-                        $('#matchScoreText').text(matchScore + '%');
-
-                        // Display tags
-                        $('#matchingTags').empty();
-                        $('#non-matching-tags').empty();
-
-                        matchingTags.forEach(function(tag) {
-                            $('#matchingTags').append('<span class="tag">' + tag + '</span>');
-                        });
-
-                        nonMatchingTags.forEach(function(tag) {
-                            $('#non-matching-tags').append('<span class="tag non-matching">' + tag + '</span>');
-                        });
-
-                        // Display keyword density
-                        $('#keywordDensity').empty();
-                        keywordDensity.forEach(function(item) {
-                            
-                            $('#keywordDensity').append('<div class="keyword-bar" style="width: ' + item.percentage + '%;">' + item.keyword + ': ' + item.density + '</div>');
-                        });
-
-                        // Update job analysis sections
-                        $('#languageTone').text(response.job_analysis.language_tone);
-                        $('#emphasis').text(response.job_analysis.emphasis);
-                        $('#socialResponsibility').text(response.job_analysis.social_responsibility);
-                    }
-                });
-            });
-        });
-    </script>
+    <!-- Link to external JavaScript -->
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>
