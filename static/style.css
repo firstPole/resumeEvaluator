@@ -191,3 +191,172 @@ h2, h3, h4 {
     border-color: #ced4da; /* Light gray border */
     cursor: not-allowed; /* Not allowed cursor */
 }
+.left-panel {
+    width: 70%;
+    background: linear-gradient(135deg, #0062E6 0%, #33AEFF 100%);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.left-panel h1 {
+    font-size: 4em;
+    margin: 0;
+}
+
+.right-panel {
+    width: 30%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.right-panel h2 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.btn-google {
+    display: inline-block;
+    background-color: #4285F4;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-google:hover {
+    background-color: #357AE8;
+}
+
+/* New styles for login page */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.login-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+.left-panel {
+    width: 70%;
+    background: linear-gradient(135deg, #0062E6 0%, #33AEFF 100%);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.left-panel h1 {
+    font-size: 4em;
+    margin: 0;
+}
+
+.right-panel {
+    width: 30%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.right-panel h2 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.btn-google {
+    display: inline-block;
+    background-color: #4285F4;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-google:hover {
+    background-color: #357AE8;
+}
+
+/* General Body and Container Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+/* Header Styles */
+header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.25em;
+    margin: 0;
+    font-weight: normal;
+    color: #333;
+}
+
+/* Welcome Message and Logout Button */
+header h1 {
+    font-size: 1.1em;
+}
+
+header a {
+    font-size: 0.9em;
+    color: #007bff;
+    text-decoration: none;
+}
+
+header a:hover {
+    text-decoration: underline;
+}
+
+/* Button Styles */
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+.left-panel .brand {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 2em;
+    font-weight: bold;
+    color: #ffffff;
+}

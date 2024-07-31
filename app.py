@@ -1,22 +1,91 @@
-from flask import Flask, request, render_template, jsonify,session,send_from_directory
-from text_processing import count_tag_occurrences, update_resume_with_tags_using_llm ,save_text_to_docx,extract_text_from_docx, extract_text_from_pdf, preprocess_text, extract_skills, calculate_matching_score, filter_relevant_skills
-from sentiment_analysis import analyze_job_description,perform_sentiment_analysis,get_keyword_density
+from flask import Flask, request, render_template, jsonify, session, send_from_directory, redirect, url_for
+from text_processing import (count_tag_occurrences, update_resume_with_tags_using_llm, save_text_to_docx,
+                             extract_text_from_docx, extract_text_from_pdf, preprocess_text, extract_skills,
+                             calculate_matching_score, filter_relevant_skills)
+from sentiment_analysis import analyze_job_description, perform_sentiment_analysis, get_keyword_density
 import os
-import secrets
 import uuid
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from flask_oauthlib.client import OAuth
+import googleapiclient.discovery
+from googleapiclient.discovery import build
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY') or secrets.token_hex(16)
+app.secret_key = os.urandom(24)
+
+# Use environment variables for client ID and secret
+app.config['GOOGLE_ID'] = os.getenv('GOOGLE_CLIENT_ID')
+app.config['GOOGLE_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
+
+oauth = OAuth(app)
+google = oauth.remote_app(
+    'google',
+    consumer_key=app.config['GOOGLE_ID'],
+    consumer_secret=app.config['GOOGLE_SECRET'],
+    request_token_params={
+        'scope': 'openid email profile',
+    },
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    access_token_method='POST',
+)
 
 @app.route('/')
+def home():
+    return render_template('login.html')
+
+@app.route('/index')
 def index():
-    return render_template('index.html')
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        if me.data and 'name' in me.data:
+            return render_template('index.html', user=me.data["name"])
+        else:
+            return render_template('index.html', user='User')
+    return redirect(url_for('home'))
+
+@app.route('/login')
+def login():
+    return google.authorize(callback=url_for('google_callback', _external=True))
+
+@app.route('/logout')
+def logout():
+    session.pop('google_token', None)  # Clear the Google token
+    session.pop('user', None)  # Clear any other session data
+    return redirect(url_for('home'))
+
+@app.route('/google_callback')
+def google_callback():
+    if 'error' in request.args:
+        return f'Error: {request.args["error"]}'
+    
+    response = google.authorized_response()
+    
+    if response is None or response.get('access_token') is None:
+        return 'Access denied: reason={} error={}'.format(
+            request.args.get('error_reason', 'unknown'),
+            request.args.get('error_description', 'unknown')
+        )
+    
+    session['google_token'] = (response['access_token'], '')
+    return redirect(url_for('index'))
+
+@google.tokengetter
+def get_google_oauth_token():
+    return session.get('google_token')
 
 @app.route('/evaluate', methods=['POST'])
 def evaluate_resume():
     resume_file = request.files.get('resume_file')
     job_description = request.form.get('job_description')
-    
+
     if resume_file and resume_file.filename:
         file_ext = resume_file.filename.rsplit('.', 1)[1].lower()
         if file_ext == 'pdf':
@@ -35,26 +104,22 @@ def evaluate_resume():
 
     resume_skills = extract_skills(resume_text)
     job_skills = extract_skills(job_description)
-    
+
     missing_skills = job_skills - resume_skills
     matched_skills = job_skills & resume_skills
 
     missing_skills = filter_relevant_skills(matched_skills, list(missing_skills))
 
     job_analysis = analyze_job_description(job_description)
-    
-    # Include keyword density in the response
-    # keyword_density = job_analysis.get('keyword_density', [])
+
     keyword_density = []
-    # Get occurrences of matching and non-matching tags
     matching_tag_occurrences = count_tag_occurrences(job_description, list(matched_skills))
     non_matching_tag_occurrences = count_tag_occurrences(job_description, list(missing_skills))
 
-    # Convert occurrences to the required format and append to keyword_density
     for keyword, count in matching_tag_occurrences.items():
         if count > 0:
             keyword_density.append({"keyword": keyword, "density": count})
-    
+
     for keyword, count in non_matching_tag_occurrences.items():
         if count > 0:
             keyword_density.append({"keyword": keyword, "density": count})
@@ -72,26 +137,24 @@ def evaluate_resume():
             'language_tone': job_analysis['language_tone'],
             'emphasis': job_analysis['emphasis_teamwork'],
             'social_responsibility': job_analysis['social_responsibility'],
-            'keyword_density': keyword_density  # Include keyword density here
-            
+            'keyword_density': keyword_density
         }
     })
 
 @app.route('/generate-updated-resume', methods=['POST'])
 def generate_updated_resume():
     try:
-        print("inside generate")
         selected_tags = request.json.get('tags', [])
         resume_text = session.get('resume_text', '')
-        
+
         if not resume_text.strip():
             return jsonify({'error': 'No resume text found.'}), 400
-        
+
         updated_resume_text = update_resume_with_tags_using_llm(resume_text, selected_tags)
-        
+
         output_file_path = f"static/updated_resume_{session['unique_id']}.docx"
         save_text_to_docx(updated_resume_text, output_file_path)
-        
+
         return jsonify({'file_path': output_file_path})
     except Exception as e:
         print(f"Error: {e}")

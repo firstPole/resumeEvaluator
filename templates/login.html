@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>AI Powered Resume Evaluation - Login</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Clean and professional font */
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .left-panel {
+            width: 70%;
+            background: linear-gradient(135deg, #003366, #0066cc); /* Darker and more professional gradient */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        .left-panel .brand {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 3.5em; /* Increase size for more impact */
+            font-weight: 800; /* Bold for impact */
+            color: #ffffff;
+            letter-spacing: 1px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4); /* Subtle shadow for sophistication */
+        }
+
+        .left-panel .title-container {
+            margin-top: 20px;
+        }
+
+        .left-panel h1 {
+            font-size: 2.5em; /* Adjusted size to fit the branding */
+            margin: 0;
+        }
+
+        .right-panel {
+            width: 30%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .right-panel h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .btn-google {
+            display: inline-block;
+            background-color: #4285F4;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-google:hover {
+            background-color: #357AE8;
+            transform: translateY(-2px); /* Subtle hover effect */
+        }
+
+        .btn-google:active {
+            transform: translateY(0); /* Reset transform on click */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="brand">Vuna</div>
+            <div class="title-container">
+                <h1>AI Powered Resume Evaluation</h1>
+            </div>
+        </div>
+        <div class="right-panel">
+            <h2>Login with Google</h2>
+            <a href="{{ url_for('login') }}" class="btn-google">Login with Google</a>
+        </div>
+    </div>
+</body>
+</html>
