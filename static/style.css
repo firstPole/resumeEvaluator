@@ -1,152 +1,66 @@
-  /* Existing styles */
+/* General Styles */
 body {
-    background-color: #f4f6f9; /* Light grey background */
-    font-family: Arial, sans-serif;
+    background-color: #f4f6f9; /* Light grey background for the entire page */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Clean and professional font */
     color: #333;
+    margin: 0;
+    padding: 0;
 }
-.container {
+
+html, body {
+    height: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    background: linear-gradient(135deg, #003366, #0066cc); /* Gradient to match login */
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+/* Main Panel */
+main {
+    margin-left: 15%;
+    padding: 20px;
+}
+
+header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.25em;
+    margin: 0;
+    color: #003366; /* Dark blue to match the sidebar */
+}
+
+.container-fluid {
     margin-top: 50px;
 }
+
+/* Card Styles */
 .card {
     margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .card-body {
-    padding: 20px;
+    padding: 10px;
 }
-/* New styles for sentiment analysis */
-.sentiment-analysis {
-    margin-top: 20px;
-}
-.sentiment-result {
-    font-size: 16px;
-    font-weight: bold;
-}
-.sentiment-icon {
-    font-size: 20px;
-    margin-right: 5px;
-}
-.sentiment-result {
-    margin-top: 10px;
-}
-/* Existing styles */
-.progress-container {
-    position: relative;
-    height: 30px;
-    width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: none;
-}
-.progress-bar {
-    height: 100%;
-    width: 0;
-    background: linear-gradient(90deg, #007bff, #0056b3);
-    color: white;
-    text-align: center;
-    line-height: 30px;
-    font-weight: bold;
-    border-radius: 10px;
-    transition: width 0.4s ease-in-out;
-}
-.progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #fff;
-    font-weight: bold;
-    font-size: 14px;
-}
-.tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    overflow: hidden; /* Prevent overlap */
-}
-.tag {
-    background: #003366; /* Navy blue */
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer; /* Change cursor to pointer for clickable tags */
-    white-space: nowrap; /* Prevent text wrapping */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.tag.non-matching {
-    background: #b0bec5; /* Light grey */
-}
-.tag:hover {
-    background-color: #306191; /* 002244 Darker navy blue on hover */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-.tooltip-icon {
-    font-size: 14px;
-    cursor: pointer;
-    margin-left: 5px;
-    color: #003366; /* Navy blue */
-    position: relative;
-}
-.tooltip-content {
-    display: none;
-    position: absolute;
-    background-color: #ffffff; /* White */
-    border: 1px solid #ddd;
-    padding: 5px;
-    z-index: 1000;
-    border-radius: 5px;
-    font-size: 12px;
-    max-width: 200px;
-    left: 0;
-    top: 25px; /* Adjusted for better visibility */
-}
-.tooltip-icon:hover .tooltip-content,
-.tooltip-content:hover {
-    display: block;
-}
-#optimizeResumeButton {
-    display: block;
-    margin: 20px auto;
-}
-.text-center-strong {
-    font-weight: bold;
-    color: #333;
-    font-size: 16px;
-}
-.text-small {
-    font-size: 12px;
-}
-.keyword-density-chart {
-    width: 100%;
-    height: 300px;
-}
-.keyword-bar {
-    
-    background-color: #ebdada34; 
-    color: rgb(0, 0, 0);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer; /* Change cursor to pointer for clickable tags */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    
-}
-.keyword-bar:hover {
-    background-color: #306191; /* 002244 Darker navy blue on hover */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-h2, h3, h4 {
-    font-weight: 600;
-}
+
+/* Button Styles */
 .evaluate-button {
     background-color: #003366; /* Navy blue */
     color: white;
@@ -191,172 +105,149 @@ h2, h3, h4 {
     border-color: #ced4da; /* Light gray border */
     cursor: not-allowed; /* Not allowed cursor */
 }
-.left-panel {
-    width: 70%;
-    background: linear-gradient(135deg, #0062E6 0%, #33AEFF 100%);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-}
 
-.left-panel h1 {
-    font-size: 4em;
-    margin: 0;
-}
-
-.right-panel {
-    width: 30%;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.right-panel h2 {
-    margin-bottom: 20px;
-    font-size: 1.5em;
-}
-
-.btn-google {
-    display: inline-block;
-    background-color: #4285F4;
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
+/* Progress Bar */
+.progress-container {
+    width: 100%;
+    background-color: #e9ecef;
     border-radius: 5px;
-    font-size: 1.2em;
+    overflow: hidden;
     margin-top: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.btn-google:hover {
-    background-color: #357AE8;
+.progress-bar {
+    width: 0;
+    height: 30px;
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 5px;
+    transition: width 0.5s ease;
 }
 
-/* New styles for login page */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: Arial, sans-serif;
+.progress-text {
+    display: block;
 }
 
-.login-container {
+/* Tooltip Styles */
+.tooltip-icon {
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 5px;
+    color: #003366; /* Navy blue */
+    position: relative;
+}
+.tooltip-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff; /* White */
+    border: 1px solid #ddd;
+    padding: 5px;
+    z-index: 1000;
+    border-radius: 5px;
+    font-size: 12px;
+    max-width: 200px;
+    left: 0;
+    top: 25px; /* Adjusted for better visibility */
+}
+.tooltip-icon:hover .tooltip-content,
+.tooltip-content:hover {
+    display: block;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-center-strong {
+    font-weight: bold;
+}
+
+.tags {
     display: flex;
-    height: 100vh;
+    flex-wrap: wrap;
+    gap: 5px;
+    overflow: hidden; /* Prevent overlap */
+}
+.tag {
+    background: #003366; /* Navy blue */
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 400;
+    cursor: pointer; /* Change cursor to pointer for clickable tags */
+    white-space: nowrap; /* Prevent text wrapping */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.tag.non-matching {
+    background: #b0bec5; /* Light grey */
+}
+.tag:hover {
+    background-color: #306191; /* 002244 Darker navy blue on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
+}
+
+.mt-auto {
+    margin-top: auto;
+}
+
+.text-small {
+    font-size: 0.9rem;
+}
+
+.keyword-density-chart {
+    width: 100%;
+    height: 300px;
+}
+.keyword-bar {
+    
+    background-color: #ebdada34; 
+    color: rgb(0, 0, 0);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer; /* Change cursor to pointer for clickable tags */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    
+}
+.keyword-bar:hover {
+    background-color: #306191; /* 002244 Darker navy blue on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+.card-full-width {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.full-width-section {
     width: 100%;
 }
 
-.left-panel {
-    width: 70%;
-    background: linear-gradient(135deg, #0062E6 0%, #33AEFF 100%);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
+/* Custom styles for card dimensions */
+.card-chart {
+    width: 260px !important; 
 }
-
-.left-panel h1 {
-    font-size: 4em;
-    margin: 0;
-}
-
-.right-panel {
-    width: 30%;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.right-panel h2 {
-    margin-bottom: 20px;
-    font-size: 1.5em;
-}
-
-.btn-google {
-    display: inline-block;
-    background-color: #4285F4;
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    margin-top: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.btn-google:hover {
-    background-color: #357AE8;
-}
-
-/* General Body and Container Styles */
-body, html {
-    margin: 0;
+.card-chart .card-body {
     padding: 0;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    color: #333;
 }
-
-/* Header Styles */
-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+canvas {
+    width: 100% !important;
+    height: 260px !important; /* Adjust height as needed */
 }
-
-h1 {
-    font-size: 1.25em;
-    margin: 0;
-    font-weight: normal;
-    color: #333;
+/* Ensure that the card fits within its column */
+.card-full-width {
+    margin-top: 0;
+    width: 100%;
 }
-
-/* Welcome Message and Logout Button */
-header h1 {
-    font-size: 1.1em;
-}
-
-header a {
-    font-size: 0.9em;
-    color: #007bff;
-    text-decoration: none;
-}
-
-header a:hover {
-    text-decoration: underline;
-}
-
-/* Button Styles */
-.btn-outline-danger {
-    border-color: #dc3545;
-    color: #dc3545;
-}
-
-.btn-outline-danger:hover {
-    background-color: #dc3545;
-    color: white;
-}
-.left-panel .brand {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-size: 2em;
-    font-weight: bold;
-    color: #ffffff;
+.no-top-margin {
+    margin-top: 0;
 }

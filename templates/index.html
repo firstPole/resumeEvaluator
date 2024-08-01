@@ -1,125 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Resume Evaluation</title>
-        <!-- Link to external CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <!-- Include Bootstrap CSS (if needed) -->
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Include jQuery library -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <!-- Include Chart.js library -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Evaluation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
 <body>
-    <header>
-        <h1>Welcome, {{ user }}</h1>
-        <a href="/logout" class="btn btn-outline-danger">Logout</a>
-    </header>
-    <div class="container">
-        <h2 class="text-center">AI Powered Resume Evaluation</h2>
-        <div class="card">
-            <div class="card-body">
-
-        <form id="resume-form">
-            <div class="form-group">
-                <label for="resume_file" class="text-center-strong">Upload Resume (PDF or DOCX):</label>
-                <input type="file" class="form-control-file" id="resume_file" name="resume_file" accept=".pdf,.docx" required>
-            </div>
-            <div class="form-group">
-                <label for="job_description" class="text-center-strong">Job Description:</label>
-                <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
-            </div>
-            <button type="submit" class="evaluate-button">Evaluate</button>
-            <button type="button" id="reset-button" class="reset-button" disabled>Reset</button><p></p>
-            <div id="progress-bar" class="progress-container">
-                <div class="progress-bar" id="progress-bar-inner">
-                    <span class="progress-text" id="progress-text">Evaluating...</span>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Left Panel -->
+            <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
+                <div class="sidebar-content">
+                    <h4 class="text-light">Menu</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                <i class="fa fa-home"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fa fa-upload"></i> Upload Resume
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fa fa-cogs"></i> Settings
+                            </a>
+                        </li>
+                        <!-- More menu items can be added here -->
+                        <li class="nav-item mt-auto">
+                            <a class="nav-link text-light" href="/logout">
+                                <i class="fa fa-user"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                </div>
+            </nav>
 
-        </form>
-        </div>
-        </div>
-
-
-        <div id="result" class="card" style="display: none;">
-            <div class="card-body">
-                <h3 class="text-center">Evaluation Result - <span id="matchText"></span></h3>
+            <!-- Main Content -->
+            <main role="main" class="col-md-10 ml-sm-auto px-4">
+                <header>
+                    <h1>Welcome, {{ user }}</h1>
+                </header>
+                
                 <div class="row">
-                    <div class="col-md-4">
+                    <!-- Upload Section -->
+                    <div class="col-md-12">
+                        <h5 class="text-center">AI Powered Resume Evaluation</h5>
                         <div class="card">
                             <div class="card-body">
-                                <canvas id="matchChart"></canvas>
-                                <p class="text-center mt-3 text-small" id="matchScoreText"></p>
+                                <form id="resume-form">
+                                    <div class="form-group">
+                                        <label for="resume_file" class="text-center-strong">Upload Resume (PDF or DOCX):</label>
+                                        <input type="file" class="form-control-file" id="resume_file" name="resume_file" accept=".pdf,.docx" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="job_description" class="text-center-strong">Job Description:</label>
+                                        <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
+                                    </div>
+                                    <button type="submit" class="evaluate-button">Evaluate</button>
+                                    <button type="button" id="reset-button" class="reset-button" disabled>Reset</button>
+                                    <div id="progress-bar" class="progress-container mt-3">
+                                        <div class="progress-bar" id="progress-bar-inner">
+                                            <span class="progress-text" id="progress-text">Evaluating...</span>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
+                        
+                        <!-- Evaluation Results -->
+                        <div id="result" class="card" style="display: none;">
                             <div class="card-body">
-                                <h4 class="text-center">Matching Skills <span class="tooltip-icon">ℹ️
-                                    <div class="tooltip-content">Skills that match the job description requirements.</div>
-                                </span></h4>
-                                <div class="tags" id="matchingTags"></div>
-                                <h4 class="text-center mt-4">Non-Matching Skills <span class="tooltip-icon">ℹ️
-                                    <div class="tooltip-content">Skills that do not match the job description requirements.</div>
-                                </span></h4>
-                                <div class="tags" id="non-matching-tags"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="text-center">Job Analysis</h4>
-                                <strong>Resume Sentiment:</strong><span class="tooltip-icon">ℹ️
-                                    <div class="tooltip-content">Overall Sentiment analysis of your Resume</div>
-                                    <div id="sentiment-analysis-result"></div>
-                                </span>
-                                
-                                <p></p>
-                                <strong>Language Tone:</strong><span class="tooltip-icon">ℹ️
-                                    <div class="tooltip-content">The overall tone used in the job description (formal, casual, etc.).</div>
-                                    <div id="languageTone"></div>
-                                </span>
-                                
-                                <p></p>
-                               
-                                <strong>Emphasis:</strong><span class="tooltip-icon">ℹ️
-                                    <div class="tooltip-content">Whether the job description emphasizes teamwork or individual contribution.</div>
-                                    <div id="emphasis"></div>
-                                </span>
-                                
-                                <p></p>
-                               
-                                <strong>Social Responsibility:</strong><span class="tooltip-icon">ℹ️
-                                    <div class="tooltip-content">The company’s commitment to social responsibility, such as sustainability and diversity.</div>
-                                    <div id="socialResponsibility"></div>
-                                </span>
-                                
-                                <p></p>
-                               
-                                <strong>Keyword Density:</strong><span class="tooltip-icon">ℹ️
-                                    <div class="tooltip-content">The frequency of important keywords in the job description.</div>
-                                </span>
-                                
-                                <div id="keywordDensity"></div>
-                                <p></p>
-                                
+                                <h3 class="text-center">Evaluation Result - <span id="matchText"></span></h3>
+                                <div class="row">
+                                    <!-- Chart and Matching Skills Section -->
+                                    <div class="col-md-4">
+                                        <div class="card card-chart">
+                                            <div class="card-body">
+                                                <canvas id="matchChart"></canvas>
+                                                <p class="text-center mt-3 text-small" id="matchScoreText"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card card-full-width">
+                                            <div class="card-body">
+                                                <h5 class="no-top-margin">Matching Skills <span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">Skills that match the job description requirements.</div>
+                                                </span></h5>
+                                                <div class="tags" id="matchingTags"></div>
+                                                <h5 class="mt-4">Non-Matching Skills <span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">Skills that do not match the job description requirements.</div>
+                                                </span></h5>
+                                                <div class="tags" id="non-matching-tags"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Job Analysis and Keyword Density Section -->
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4>Job Analysis</h4>
+                                                <strong>Resume Sentiment:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">Overall Sentiment analysis of your Resume</div>
+                                                </span>
+                                                <div id="sentiment-analysis-result"></div>
+                                                
+                                                <p></p>
+                                                <strong>Language Tone:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">The overall tone used in the job description (formal, casual, etc.).</div>
+                                                </span>
+                                                <div id="languageTone"></div>
+                                                
+                                                <p></p>
+                                                <strong>Emphasis:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">Whether the job description emphasizes teamwork or individual contribution.</div>
+                                                </span>
+                                                <div id="emphasis"></div>
+                                                
+                                                <p></p>
+                                                <strong>Social Responsibility:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">The company’s commitment to social responsibility, such as sustainability and diversity.</div>
+                                                </span>
+                                                <div id="socialResponsibility"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4>Keyword Density</h4>
+                                                <strong>Keyword Density:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">The frequency of important keywords in the job description.</div>
+                                                </span>
+                                                <div id="keywordDensity"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
 
-    <!-- Link to external JavaScript -->
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>

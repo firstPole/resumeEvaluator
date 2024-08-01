@@ -108,14 +108,20 @@ $(document).ready(function() {
                         labels: ['Matching Skills', 'Non-Matching Skills'],
                         datasets: [{
                             data: [matchingTags.length, nonMatchingTags.length],
-                            backgroundColor: ['#002244', '#b0bec5'],
+                            backgroundColor: ['#003366', '#b0bec5'], // Updated colors
                         }]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: 'top',
+                                align: 'start', // Align legends to start (horizontal)
+                labels: {
+                    boxWidth: 20, // Adjust box width as needed
+                    padding: 20 // Add padding between the legends
+                }
                             },
                             tooltip: {
                                 callbacks: {
@@ -140,7 +146,7 @@ $(document).ready(function() {
                 $('#non-matching-tags').empty();
 
                 matchingTags.forEach(function(tag) {
-                    $('#matchingTags').append('<span class="tag">' + tag + '</span>');
+                    $('#matchingTags').append('<span class="tag matching">' + tag + '</span>'); // Added 'matching' class
                 });
 
                 nonMatchingTags.forEach(function(tag) {
@@ -175,7 +181,7 @@ $(document).ready(function() {
                 // Display keyword density
                 $('#keywordDensity').empty();
                 keywordDensity.forEach(function(item) {
-                    $('#keywordDensity').append('<div class="keyword-bar" style="display: inline-block">' + item.keyword + ': ' + item.density + '</div>');
+                    $('#keywordDensity').append('<div class="keyword-bar">' + item.keyword + ': ' + item.density + '</div>');
                 });
 
                 // Update job analysis sections

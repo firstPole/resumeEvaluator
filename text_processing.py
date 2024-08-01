@@ -62,6 +62,7 @@ def calculate_matching_score(resume_text, job_description):
     
     return final_score * 100
 
+
 def filter_relevant_skills(matching_tags, non_matching_tags):
     return non_matching_tags
 
@@ -130,3 +131,25 @@ def save_text_to_docx(text, path):
             doc.add_paragraph(paragraph)
     doc.save(path)
 
+def generate_personalized_recommendations(resume_text, job_description, matched_skills, missing_skills):
+    # Use LLM to generate personalized recommendations
+    prompt = (
+        f"Here is a resume:\n\n{resume_text}\n\n"
+        f"Here is a job description:\n\n{job_description}\n\n"
+        f"Matched skills: {', '.join(matched_skills)}\n"
+        f"Missing skills: {', '.join(missing_skills)}\n\n"
+        f"Provide personalized recommendations for the candidate to improve their resume and better match the job description."
+    )
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are an expert career advisor."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=1500,
+        temperature=0.7
+    )
+
+    recommendations = response.choices[0].message['content'].strip()
+    return recommendations

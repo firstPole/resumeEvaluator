@@ -1,15 +1,11 @@
 from flask import Flask, request, render_template, jsonify, session, send_from_directory, redirect, url_for
-from text_processing import (count_tag_occurrences, update_resume_with_tags_using_llm, save_text_to_docx,
-                             extract_text_from_docx, extract_text_from_pdf, preprocess_text, extract_skills,
-                             calculate_matching_score, filter_relevant_skills)
-from sentiment_analysis import analyze_job_description, perform_sentiment_analysis, get_keyword_density
+from text_processing import (extract_text_from_docx, extract_text_from_pdf, preprocess_text,
+                             extract_skills, calculate_matching_score, filter_relevant_skills,
+                             count_tag_occurrences, update_resume_with_tags_using_llm, save_text_to_docx)
+from sentiment_analysis import analyze_job_description, perform_sentiment_analysis
 import os
 import uuid
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
 from flask_oauthlib.client import OAuth
-import googleapiclient.discovery
-from googleapiclient.discovery import build
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -57,8 +53,8 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('google_token', None)  # Clear the Google token
-    session.pop('user', None)  # Clear any other session data
+    session.pop('google_token', None)
+    session.pop('user', None)
     return redirect(url_for('home'))
 
 @app.route('/google_callback')
@@ -86,19 +82,20 @@ def evaluate_resume():
     resume_file = request.files.get('resume_file')
     job_description = request.form.get('job_description')
 
-    if resume_file and resume_file.filename:
-        file_ext = resume_file.filename.rsplit('.', 1)[1].lower()
-        if file_ext == 'pdf':
-            resume_text = extract_text_from_pdf(resume_file.stream)
-        elif file_ext == 'docx':
-            resume_text = extract_text_from_docx(resume_file.stream)
-        else:
-            return jsonify({'error': 'Unsupported file type. Please upload a PDF or DOCX file.'}), 400
-    else:
+    if not resume_file or not resume_file.filename:
         return jsonify({'error': 'No resume file provided.'}), 400
+
+    file_ext = resume_file.filename.rsplit('.', 1)[1].lower()
+    if file_ext == 'pdf':
+        resume_text = extract_text_from_pdf(resume_file.stream)
+    elif file_ext == 'docx':
+        resume_text = extract_text_from_docx(resume_file.stream)
+    else:
+        return jsonify({'error': 'Unsupported file type. Please upload a PDF or DOCX file.'}), 400
 
     resume_text = preprocess_text(resume_text)
     job_description = preprocess_text(job_description)
+
     sentiment_analysis = perform_sentiment_analysis(resume_text)
     match_score = calculate_matching_score(resume_text, job_description)
 
@@ -109,7 +106,6 @@ def evaluate_resume():
     matched_skills = job_skills & resume_skills
 
     missing_skills = filter_relevant_skills(matched_skills, list(missing_skills))
-
     job_analysis = analyze_job_description(job_description)
 
     keyword_density = []
