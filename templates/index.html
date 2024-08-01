@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  class="blackwhite-theme">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume Evaluation</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Material Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 <body>
     <div class="container-fluid">
@@ -46,8 +48,25 @@
             <!-- Main Content -->
             <main role="main" class="col-md-10 ml-sm-auto px-4">
                 <header>
-                    <h1>Welcome, {{ user }}</h1>
+                    <div class="welcome-message">
+                        <div class="profile-icon">
+                            {% if user.profile_pic %}
+                                <img src="{{ user.profile_pic }}" alt="Profile Picture">
+                            {% else %}
+                                <i class="material-icons">account_circle</i>
+                            {% endif %}
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="userMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Welcome, {{ user.name }}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="userMenuButton">
+                                <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
+                            </div>
+                        </div>
+                    </div>
                 </header>
+                <p></p>
                 
                 <div class="row">
                     <!-- Upload Section -->
@@ -154,6 +173,13 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+     <!-- jQuery -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <!-- Popper.js (required for Bootstrap dropdowns) -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+     <!-- Bootstrap JavaScript -->
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+     <!-- Custom Scripts -->
+     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>

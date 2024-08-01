@@ -100,7 +100,10 @@ $(document).ready(function() {
                     console.error('Cannot get context for the canvas.');
                     return;
                 }
-
+                // Function to get CSS variable value
+                function getCSSVariable(name) {
+                    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+                }
                 // Create a new chart
                 matchChartInstance = new Chart(ctx, {
                     type: 'pie',
@@ -108,7 +111,9 @@ $(document).ready(function() {
                         labels: ['Matching Skills', 'Non-Matching Skills'],
                         datasets: [{
                             data: [matchingTags.length, nonMatchingTags.length],
-                            backgroundColor: ['#003366', '#b0bec5'], // Updated colors
+                            backgroundColor: [ 
+                                getCSSVariable('--chart-color-matching'),
+                                getCSSVariable('--chart-color-non-matching')], // Updated colors
                         }]
                     },
                     options: {

@@ -42,9 +42,14 @@ def index():
     if 'google_token' in session:
         me = google.get('userinfo')
         if me.data and 'name' in me.data:
-            return render_template('index.html', user=me.data["name"])
+            user_info = {
+                'name': me.data["name"],
+                'profile_pic': me.data.get("picture")  # Get the profile picture URL
+            }
+            return render_template('index.html', user=user_info)
+            # return render_template('index.html', user=me.data["name"])
         else:
-            return render_template('index.html', user='User')
+            return render_template('index.html', user={'name': 'User', 'profile_pic': ''})
     return redirect(url_for('home'))
 
 @app.route('/login')
