@@ -4,13 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume Evaluation</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Material Icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+     <!-- Bootstrap CSS -->
+     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+     <!-- Material Icons -->
+     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+     <!-- Custom Styles -->
+     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+     <!-- jQuery -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <!-- Chart.js -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <!-- Popper.js (required for Bootstrap dropdowns) -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+     <!-- Bootstrap JavaScript -->
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Custom Scripts -->
 </head>
 <body>
     <div class="container-fluid">
@@ -173,13 +181,7 @@
         </div>
     </div>
 
-     <!-- jQuery -->
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-     <!-- Popper.js (required for Bootstrap dropdowns) -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-     <!-- Bootstrap JavaScript -->
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-     <!-- Custom Scripts -->
+    
      <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@ $(document).ready(function() {
     var matchChartInstance = null;
 
     function resetForm() {
+        console.log('Resetting form...');
         $('#resume-form')[0].reset(); // Reset form fields
         $('#result').hide(); // Hide the result section
         $('#matchingTags').empty(); // Clear matching tags
@@ -68,6 +69,8 @@ $(document).ready(function() {
         }, 200);
 
         var formData = new FormData(this);
+        console.log('FormData:', formData); // Log FormData for debugging
+
         $.ajax({
             url: '/evaluate',
             type: 'POST',
@@ -75,6 +78,7 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function(response) {
+                console.log('Response:', response); // Log the response for debugging
                 $('#progress-bar').hide();
                 $('#result').show();
 
@@ -100,10 +104,12 @@ $(document).ready(function() {
                     console.error('Cannot get context for the canvas.');
                     return;
                 }
+
                 // Function to get CSS variable value
                 function getCSSVariable(name) {
                     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
                 }
+
                 // Create a new chart
                 matchChartInstance = new Chart(ctx, {
                     type: 'pie',
@@ -113,20 +119,21 @@ $(document).ready(function() {
                             data: [matchingTags.length, nonMatchingTags.length],
                             backgroundColor: [ 
                                 getCSSVariable('--chart-color-matching'),
-                                getCSSVariable('--chart-color-non-matching')], // Updated colors
+                                getCSSVariable('--chart-color-non-matching')
+                            ], // Updated colors
                         }]
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false,
+                        maintainAspectRatio: false, // Allow the chart to fill its container
                         plugins: {
                             legend: {
                                 position: 'top',
                                 align: 'start', // Align legends to start (horizontal)
-                labels: {
-                    boxWidth: 20, // Adjust box width as needed
-                    padding: 20 // Add padding between the legends
-                }
+                                labels: {
+                                    boxWidth: 20, // Adjust box width as needed
+                                    padding: 20 // Add padding between the legends
+                                }
                             },
                             tooltip: {
                                 callbacks: {
@@ -137,9 +144,19 @@ $(document).ready(function() {
                                     }
                                 }
                             }
+                        },
+                        layout: {
+                            padding: {
+                                left: 20,
+                                right: 20,
+                                top: 20,
+                                bottom: 20
+                            }
                         }
                     }
                 });
+
+                console.log('Chart created:', matchChartInstance); // Log chart creation
 
                 var matchText = matchScore > 90 ? 'Strong Match' :
                                 matchScore >= 70 ? 'Good Match' : 'Weak Match';

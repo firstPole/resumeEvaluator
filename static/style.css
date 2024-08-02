@@ -47,6 +47,7 @@
     --tooltip-border: #CCCCCC !important; /* Light Gray Border */
     --tag-matching-bg: #000000 !important; /* Black */
     --tag-non-matching-bg: #888888 !important; /* Medium Gray */
+    
     --keyword-bar-bg: #F0F0F0 !important; /* Very Light Gray */
     --keyword-bar-hover-bg: #000000 !important; /* Black */
     --chart-color-matching: #000000 !important; /* Black for Matching Skills */
@@ -164,8 +165,10 @@ header h1 {
 }
 
 .card-body {
+    
     padding: 10px;
 }
+
 
 /* Button Styles */
 .evaluate-button {
@@ -290,6 +293,10 @@ header h1 {
 .tag.non-matching {
     background: var(--tag-non-matching-bg);
 }
+.tag.non-matching:hover{
+    background-color: var(--keyword-bar-hover-bg);
+    color:white;
+}
 .tag:hover {
     background-color: var(--highlight-color);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -325,6 +332,7 @@ header h1 {
 }
 .keyword-bar:hover {
     background-color: var(--keyword-bar-hover-bg);
+    color:white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 .card-full-width {
@@ -337,14 +345,33 @@ header h1 {
 
 /* Custom styles for card dimensions */
 .card-chart {
-    width: 260px !important; 
+    width: 100% !important;
+    height: 370px; /* Increase height as needed */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
 .card-chart .card-body {
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
-canvas {
+
+#matchChart {
     width: 100% !important;
-    height: 260px !important;
+    height: 350px !important; /* Increase height as needed */
+}
+
+
+canvas {
+    width: 70% !important;
+    height: 70% !important;
 }
 .card-full-width {
     margin-top: 0;
