@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"  class="blackwhite-theme">
+<html lang="en"  class="beige-brown-tan-theme">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,8 +21,28 @@
     <!-- Custom Scripts -->
 </head>
 <body>
+     <!-- Fixed Header -->
+     <header class="header">
+    <div class="header-content">
+        
+        <div class="profile-and-logout">
+            <div class="profile-icon">
+                {% if user.profile_pic %}
+                    <img src="{{ user.profile_pic }}" alt="Profile Picture">
+                {% else %}
+                    <i class="material-icons">account_circle</i>
+                {% endif %}
+            </div>
+            <div class="welcome-message">
+                <span>Welcome, {{ user.name }}</span>
+            </div>
+            <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+        </div>
+    </div>
+</header>
+
     <div class="container-fluid">
-        <div class="row">
+        <div class="row"> 
             <!-- Left Panel -->
             <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
                 <div class="sidebar-content">
@@ -54,9 +74,9 @@
             </nav>
 
             <!-- Main Content -->
-            <main role="main" class="col-md-10 ml-sm-auto px-4">
-                <header>
-                    <div class="welcome-message">
+            <main role="main" class="col-md-10 ml-sm-auto px-4 right-panel">
+                  <!-- <header>
+                  <div class="welcome-message">
                         <div class="profile-icon">
                             {% if user.profile_pic %}
                                 <img src="{{ user.profile_pic }}" alt="Profile Picture">
@@ -64,16 +84,16 @@
                                 <i class="material-icons">account_circle</i>
                             {% endif %}
                         </div>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="userMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                         <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                 Welcome, {{ user.name }}
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="userMenuButton">
-                                <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+                            <ul class="dropdown-menu" aria-labelledby="userMenuButton">
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                            </ul>
+                        </div> 
+                    </div> 
+                </header>-->
                 <p></p>
                 
                 <div class="row">
@@ -103,7 +123,7 @@
                         </div>
                         
                         <!-- Evaluation Results -->
-                        <div id="result" class="card" style="display: none;">
+                        <div id="result" class="card result-panel" style="display: none;">
                             <div class="card-body">
                                 <h3 class="text-center">Evaluation Result - <span id="matchText"></span></h3>
                                 <div class="row">

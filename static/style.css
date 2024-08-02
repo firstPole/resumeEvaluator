@@ -53,6 +53,65 @@
     --chart-color-matching: #000000 !important; /* Black for Matching Skills */
     --chart-color-non-matching: #888888 !important; /* Medium Gray for Non-Matching Skills */
 }
+/* Light Blue and cobalt theme */
+
+.lightblue-cobalt-theme {
+    --primary-color: #0033A0 !important; /* Cobalt Blue */
+    --secondary-color: #E3F2FD !important; /* Light Blue */
+    --accent-color: #90CAF9 !important; /* Lighter Blue */
+    --highlight-color: #64B5F6 !important; /* Medium Light Blue */
+    --background-color: #E1F5FE !important; /* Very Light Blue */
+    --text-color: #0033A0 !important; /* Cobalt Blue */
+    --sidebar-gradient-start: #0033A0 !important; /* Cobalt Blue */
+    --sidebar-gradient-end: #1976D2 !important; /* Blue */
+    --header-background: #B3E5FC !important; /* Light Blue */
+    --header-border: #90CAF9 !important; /* Lighter Blue Border */
+    --button-bg: #0033A0 !important; /* Cobalt Blue */
+    --button-hover-bg: #002171 !important; /* Darker Cobalt Blue */
+    --button-disabled-bg: #B3E5FC !important; /* Light Blue */
+    --button-disabled-text: #90CAF9 !important; /* Lighter Blue */
+    --button-disabled-border: #E1F5FE !important; /* Very Light Blue Border */
+    --progress-bar-bg: #0033A0 !important; /* Cobalt Blue */
+    --tooltip-background: #FFFFFF !important; /* White */
+    --tooltip-border: #B3E5FC !important; /* Light Blue Border */
+    --tag-matching-bg: #0033A0 !important; /* Cobalt Blue */
+    --tag-non-matching-bg: #64B5F6 !important; /* Medium Light Blue */
+    
+    --keyword-bar-bg: #E1F5FE !important; /* Very Light Blue */
+    --keyword-bar-hover-bg: #0033A0 !important; /* Cobalt Blue */
+    --chart-color-matching: #0033A0 !important; /* Cobalt Blue for Matching Skills */
+    --chart-color-non-matching: #64B5F6 !important; /* Medium Light Blue for Non-Matching Skills */
+}
+
+/* beige-brown-tan-theme */
+.beige-brown-tan-theme {
+    --primary-color: #3e2723 !important; /* Black-Brown */
+    --secondary-color: #f5f5dc !important; /* Beige */
+    --accent-color: #d2b48c !important; /* Tan */
+    --highlight-color: #a0522d !important; /* Sienna (Brown) */
+    --background-color: #fdf5e6 !important; /* Old Lace (Beige) */
+    --text-color: #3e2723 !important; /* Black-Brown */
+    --sidebar-gradient-start: #3e2723 !important; /* Black-Brown */
+    --sidebar-gradient-end: #6d4c41 !important; /* Brown */
+    --header-background: #f5f5dc !important; /* Beige */
+    --header-border: #d2b48c !important; /* Tan Border */
+    --button-bg: #3e2723 !important; /* Black-Brown */
+    --button-hover-bg: #6d4c41 !important; /* Brown */
+    --button-disabled-bg: #d2b48c !important; /* Tan */
+    --button-disabled-text: #a0522d !important; /* Sienna (Brown) */
+    --button-disabled-border: #d2b48c !important; /* Tan Border */
+    --progress-bar-bg: #3e2723 !important; /* Black-Brown */
+    --tooltip-background: #f5f5dc !important; /* Beige */
+    --tooltip-border: #d2b48c !important; /* Tan Border */
+    --tag-matching-bg: #3e2723 !important; /* Black-Brown */
+    --tag-non-matching-bg: #a0522d !important; /* Sienna (Brown) */
+    
+    --keyword-bar-bg: #fdf5e6 !important; /* Old Lace (Beige) */
+    --keyword-bar-hover-bg: #3e2723 !important; /* Black-Brown */
+    --chart-color-matching: #3e2723 !important; /* Black-Brown for Matching Skills */
+    --chart-color-non-matching: #a0522d !important; /* Sienna (Brown) for Non-Matching Skills */
+}
+
 
 /* General Styles */
 body {
@@ -73,19 +132,22 @@ html, body {
     color: var(--secondary-color);
     min-height: 100vh; /* Full viewport height */
     padding: 20px;
-    position: fixed; /* Fixed position */
+    position: sticky; /* Fixed position */
     top: 0;
     left: 0;
     width: 100%; /* Full width */
     z-index: 100; /* Ensure it stays on top */
 }
 
+
 .sidebar-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Full height of the sidebar */
+    position: relative;
+    height: 100%;
 }
 
+.sidebar-content .nav {
+    margin-top: 20px;
+}
 .sidebar h4 {
     margin-bottom: 20px;
 }
@@ -101,59 +163,80 @@ main {
 
 
 
-header {
-    
-    
-    
-    display: flex;
-    justify-content: flex-end; /* Align items to the right */
-    align-items: center; /* Center items vertically */
-    width: 100%; /* Full width of the parent container */
-    padding: 10px; /* Add padding around the header */
-    box-sizing: border-box; /* Include padding in the width */
-}
 
 header h1 {
     font-size: 1.25em;
     margin: 0;
     color: var(--primary-color);
 }
-.welcome-message {
-    display: flex;
-    align-items: center;
-    position: absolute;
+/* Header styles */
+.header {
+    position: fixed;
     top: 0;
     right: 0;
-    padding: 10px;
-   
-    font-size: 0.8rem;
+    width: 100%;
+    height: 60px; /* Adjust the height as needed */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px, 0;
+    background-color: var(--header-background);
+    border-bottom: 1px solid var(--header-border);
+    z-index: 1000;
 }
 
-.profile-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #ddd;
-    margin-right: 10px;
+/* Container for header content */
+.header-content {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    color: #333;
 }
 
+/* Style for welcome message */
+.welcome-message {
+    margin-right: 15px;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+/* Container for profile icon and logout button */
+.profile-and-logout {
+    display: flex;
+    align-items: center;
+}
+
+/* Style for profile icon */
+.profile-icon {
+    margin-right: 10px;
+}
+
+/* Style for profile icon image */
 .profile-icon img {
-    width: 100%;
-    height: 100%;
     border-radius: 50%;
-    object-fit: cover;
+    width: 40px;
+    height: 40px;
+    object-fit: cover; /* Ensures the image is not stretched */
 }
-.dropdown-menu {
-    min-width: 150px;
+
+/* Style for logout button */
+.logout-button {
+    background-color: var(--logout-background);
+    color: var(--logout-color);
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.875rem; /* Adjust font size as needed */
 }
+
+.logout-button:hover {
+    background-color: var(--logout-hover-background);
+}
+
 
 .container-fluid {
+    padding-top: 60px;
     margin-top: 0;
+    
 }
 
 /* Card Styles */
@@ -353,7 +436,7 @@ header h1 {
     justify-content: center;
 }
 
-.card-chart .card-body {
+.card-chart .card-body {    
     padding: 0;
     display: flex;
     flex-direction: column;
