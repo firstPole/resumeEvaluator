@@ -1,13 +1,15 @@
-from flask import Flask, request, render_template, jsonify, session, send_from_directory, redirect, url_for
+import logging
 from text_processing import (extract_text_from_docx, extract_text_from_pdf, preprocess_text,
                              extract_skills, calculate_matching_score, filter_relevant_skills,
                              count_tag_occurrences, update_resume_with_tags_using_llm, save_text_to_docx)
 from sentiment_analysis import analyze_job_description, perform_sentiment_analysis
 import os
 import uuid
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory
 from flask_oauthlib.client import OAuth
 from dotenv import load_dotenv
-
+import mimetypes
+import braintree
 # Load environment variables from .env file
 load_dotenv()
 
@@ -17,6 +19,9 @@ app.secret_key = os.urandom(24)
 # Use environment variables for client ID and secret
 app.config['GOOGLE_ID'] = os.getenv('GOOGLE_CLIENT_ID')
 app.config['GOOGLE_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
+app.config['merchant_id']= os.getenv('merchant_id')
+app.config['public_key']= os.getenv('public_key')
+app.config['private_key']= os.getenv('private_key')
 
 oauth = OAuth(app)
 google = oauth.remote_app(
@@ -33,6 +38,25 @@ google = oauth.remote_app(
     access_token_method='POST',
 )
 
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Replace with your Braintree environment details
+
+import braintree
+
+gateway = braintree.BraintreeGateway(
+  braintree.Configuration(
+      braintree.Environment.Sandbox,
+      merchant_id=app.config['merchant_id'],
+        public_key=app.config['public_key'],
+        private_key=app.config['private_key']
+  )
+)
+
+
+
+
 @app.route('/')
 def home():
     return render_template('login.html')
@@ -47,7 +71,6 @@ def index():
                 'profile_pic': me.data.get("picture")  # Get the profile picture URL
             }
             return render_template('index.html', user=user_info)
-            # return render_template('index.html', user=me.data["name"])
         else:
             return render_template('index.html', user={'name': 'User', 'profile_pic': ''})
     return redirect(url_for('home'))
@@ -82,24 +105,83 @@ def google_callback():
 def get_google_oauth_token():
     return session.get('google_token')
 
+def validate_file_type(file):
+    mime_type, _ = mimetypes.guess_type(file.filename)
+    logging.debug(f'File MIME type: {mime_type}')
+    return mime_type in ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+
+def extract_text(file):
+    file_ext = file.filename.rsplit('.', 1)[1].lower()
+    logging.debug(f'File extension: {file_ext}')
+    if file_ext == 'pdf':
+        return extract_text_from_pdf(file.stream)
+    elif file_ext == 'docx':
+        return extract_text_from_docx(file.stream)
+    else:
+        return None
+
+# Paypal payment routines
+
+@app.route('/dropin')
+def dropin():
+    client_token = gateway.client_token.generate()
+    return render_template('payment.html', client_token=client_token)
+
+@app.route('/process_payment', methods=['POST'])
+def process_payment():
+    try:
+        data = request.get_json()
+        nonce = data['payment_method_nonce']
+        amount = data['amount']
+
+        # Validate amount here if needed (e.g., check if it's a number, within a range, etc.)
+
+        result = gateway.transaction.sale({
+            "amount": str(amount),
+            "payment_method_nonce": nonce,
+            "options": {
+                "submit_for_settlement": True
+            }
+        })
+        
+        if result.is_success:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': result.message})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+
+@app.route('/thank_you')
+def thank_you():
+    return render_template('thank_you.html')
+
+
 @app.route('/evaluate', methods=['POST'])
 def evaluate_resume():
     resume_file = request.files.get('resume_file')
     job_description = request.form.get('job_description')
 
     if not resume_file or not resume_file.filename:
+        logging.error('No resume file provided.')
         return jsonify({'error': 'No resume file provided.'}), 400
 
-    file_ext = resume_file.filename.rsplit('.', 1)[1].lower()
-    if file_ext == 'pdf':
-        resume_text = extract_text_from_pdf(resume_file.stream)
-    elif file_ext == 'docx':
-        resume_text = extract_text_from_docx(resume_file.stream)
-    else:
+    if not validate_file_type(resume_file):
+        logging.error('Unsupported file type.')
         return jsonify({'error': 'Unsupported file type. Please upload a PDF or DOCX file.'}), 400
+
+    resume_text = extract_text(resume_file)
+    if resume_text is None:
+        logging.error('Failed to extract text from resume file.')
+        return jsonify({'error': 'Failed to extract text from resume file.'}), 400
 
     resume_text = preprocess_text(resume_text)
     job_description = preprocess_text(job_description)
+
+    # # Ensure the job description is valid
+    # if not any(keyword in job_description.lower() for keyword in ["responsibilities", "requirements", "qualifications"]):
+    #     logging.error('Invalid job description content.')
+    #     return jsonify({'error': 'Invalid job description content.'}), 400
 
     sentiment_analysis = perform_sentiment_analysis(resume_text)
     match_score = calculate_matching_score(resume_text, job_description)
@@ -142,6 +224,7 @@ def evaluate_resume():
         }
     })
 
+
 @app.route('/generate-updated-resume', methods=['POST'])
 def generate_updated_resume():
     try:
@@ -158,12 +241,15 @@ def generate_updated_resume():
 
         return jsonify({'file_path': output_file_path})
     except Exception as e:
-        print(f"Error: {e}")
+        logging.error(f"Error: {e}")
         return jsonify({'error': 'An error occurred while generating the updated resume.'}), 500
 
 @app.route('/static/<path:filename>')
 def download_file(filename):
     return send_from_directory('static', filename)
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

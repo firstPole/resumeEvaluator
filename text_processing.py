@@ -26,11 +26,16 @@ def extract_text_from_docx(file_stream):
     return '\n'.join([p.text for p in doc.paragraphs])
 
 def extract_text_from_pdf(file_stream):
-    reader = PyPDF2.PdfFileReader(file_stream)
-    text = []
-    for page in range(reader.numPages):
-        text.append(reader.getPage(page).extract_text())
-    return '\n'.join(text)
+    try:
+        reader = PyPDF2.PdfReader(file_stream)
+        text = ''
+        for page in reader.pages:
+            text += page.extract_text()
+        return text
+    except Exception as e:
+        return None
+
+
 
 def preprocess_text(text):
     return ' '.join(text.split())

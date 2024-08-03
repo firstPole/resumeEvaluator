@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"  class="beige-brown-tan-theme">
+<html lang="en"  class="blueshade-theme">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +19,8 @@
      <!-- Bootstrap JavaScript -->
      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Custom Scripts -->
+    <script src="https://js.stripe.com/v3/"></script>
+
 </head>
 <body>
      <!-- Fixed Header -->
@@ -44,7 +46,7 @@
     <div class="container-fluid">
         <div class="row"> 
             <!-- Left Panel -->
-            <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
+            <!-- <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
                 <div class="sidebar-content">
                     <h4 class="text-light">Menu</h4>
                     <ul class="nav flex-column">
@@ -63,7 +65,7 @@
                                 <i class="fa fa-cogs"></i> Settings
                             </a>
                         </li>
-                        <!-- More menu items can be added here -->
+                        
                         <li class="nav-item mt-auto">
                             <a class="nav-link text-light" href="/logout">
                                 <i class="fa fa-user"></i> Logout
@@ -71,10 +73,10 @@
                         </li>
                     </ul>
                 </div>
-            </nav>
+            </nav> -->
 
             <!-- Main Content -->
-            <main role="main" class="col-md-10 ml-sm-auto px-4 right-panel">
+            <main role="main" class="col-md-12 ml-sm-auto px-4 right-panel">
                   <!-- <header>
                   <div class="welcome-message">
                         <div class="profile-icon">
@@ -95,14 +97,14 @@
                     </div> 
                 </header>-->
                 <p></p>
-                
+              
                 <div class="row">
                     <!-- Upload Section -->
                     <div class="col-md-12">
                         <h5 class="text-center">AI Powered Resume Evaluation</h5>
                         <div class="card">
                             <div class="card-body">
-                                <form id="resume-form">
+                                <form id="resume-form" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label for="resume_file" class="text-center-strong">Upload Resume (PDF or DOCX):</label>
                                         <input type="file" class="form-control-file" id="resume_file" name="resume_file" accept=".pdf,.docx" required>
@@ -111,8 +113,19 @@
                                         <label for="job_description" class="text-center-strong">Job Description:</label>
                                         <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
                                     </div>
-                                    <button type="submit" class="evaluate-button">Evaluate</button>
-                                    <button type="button" id="reset-button" class="reset-button" disabled>Reset</button>
+                                    <!-- Button Container -->
+                                    <div class="button-container">
+                                        <div class="button-group">
+                                            <button type="submit" class="evaluate-button">Evaluate</button>
+                                            <button type="button" id="reset-button" class="reset-button" disabled>Reset</button>
+                                        </div>
+                                        <!-- Button for Coffee payment -->
+                                        <button id="checkout-button" onclick="redirectToDropin()" class="buy-coffee-btn">
+                                            <i class="material-icons">local_cafe</i> Buy Me a Coffee
+                                        </button>
+                                    </div>
+                                    
+                                    
                                     <div id="progress-bar" class="progress-container mt-3">
                                         <div class="progress-bar" id="progress-bar-inner">
                                             <span class="progress-text" id="progress-text">Evaluating...</span>

@@ -53,35 +53,65 @@
     --chart-color-matching: #000000 !important; /* Black for Matching Skills */
     --chart-color-non-matching: #888888 !important; /* Medium Gray for Non-Matching Skills */
 }
-/* Light Blue and cobalt theme */
 
-.lightblue-cobalt-theme {
-    --primary-color: #0033A0 !important; /* Cobalt Blue */
-    --secondary-color: #E3F2FD !important; /* Light Blue */
-    --accent-color: #90CAF9 !important; /* Lighter Blue */
-    --highlight-color: #64B5F6 !important; /* Medium Light Blue */
-    --background-color: #E1F5FE !important; /* Very Light Blue */
-    --text-color: #0033A0 !important; /* Cobalt Blue */
-    --sidebar-gradient-start: #0033A0 !important; /* Cobalt Blue */
-    --sidebar-gradient-end: #1976D2 !important; /* Blue */
-    --header-background: #B3E5FC !important; /* Light Blue */
-    --header-border: #90CAF9 !important; /* Lighter Blue Border */
-    --button-bg: #0033A0 !important; /* Cobalt Blue */
-    --button-hover-bg: #002171 !important; /* Darker Cobalt Blue */
-    --button-disabled-bg: #B3E5FC !important; /* Light Blue */
-    --button-disabled-text: #90CAF9 !important; /* Lighter Blue */
-    --button-disabled-border: #E1F5FE !important; /* Very Light Blue Border */
-    --progress-bar-bg: #0033A0 !important; /* Cobalt Blue */
+/* Red yellow theme */
+
+.blueshade-theme {
+    --primary-color: #000000 !important; /* Black */
+    --secondary-color: #FFFFFF !important; /* White */
+    --accent-color: #CCCCCC !important; /* Light Gray */
+    --highlight-color: #888888 !important; /* Medium Gray */
+    --background-color: #F0F0F0 !important; /* Very Light Gray */
+    --text-color: #000000 !important; /* Black */
+    --sidebar-gradient-start: #000000 !important; /* Black */
+    --sidebar-gradient-end: #333333 !important; /* Dark Gray */
+    --header-background: #F9F9F9 !important; /* Very Light Gray */
+    --header-border: #CCCCCC !important; /* Light Gray Border */
+    --button-bg: #000000 !important; /* Black */
+    --button-hover-bg: #333333 !important; /* Dark Gray */
+    --button-disabled-bg: #E5E5E5 !important; /* Light Gray */
+    --button-disabled-text: #A8A8A8 !important; /* Medium Gray */
+    --button-disabled-border: #D0D0D0 !important; /* Light Gray Border */
+    --progress-bar-bg: #000000 !important; /* Black */
     --tooltip-background: #FFFFFF !important; /* White */
-    --tooltip-border: #B3E5FC !important; /* Light Blue Border */
-    --tag-matching-bg: #0033A0 !important; /* Cobalt Blue */
-    --tag-non-matching-bg: #64B5F6 !important; /* Medium Light Blue */
+    --tooltip-border: #CCCCCC !important; /* Light Gray Border */
+    --tag-matching-bg: #000000 !important; /* Black */
+    --tag-non-matching-bg: #888888 !important; /* Medium Gray */
     
-    --keyword-bar-bg: #E1F5FE !important; /* Very Light Blue */
-    --keyword-bar-hover-bg: #0033A0 !important; /* Cobalt Blue */
-    --chart-color-matching: #0033A0 !important; /* Cobalt Blue for Matching Skills */
-    --chart-color-non-matching: #64B5F6 !important; /* Medium Light Blue for Non-Matching Skills */
+    --keyword-bar-bg: #F0F0F0 !important; /* Very Light Gray */
+    --keyword-bar-hover-bg: #000000 !important; /* Black */
+    --chart-color-matching: #000000 !important; /* Black for Matching Skills */
+    --chart-color-non-matching: #888888 !important; /* Medium Gray for Non-Matching Skills */
+
 }
+.rosewood-light-taupe-theme {
+    --primary-color: #6D3F1F !important; /* Rosewood */
+    --secondary-color: #D8CFC4 !important; /* Light Taupe */
+    --accent-color: #A8978A !important; /* Light Taupe (Darker) */
+    --highlight-color: #B25C5C !important; /* Rosewood (Medium) */
+    --background-color: #F4EDE8 !important; /* Light Taupe (Lighter) */
+    --text-color: #6D3F1F !important; /* Rosewood */
+    --sidebar-gradient-start: #6D3F1F !important; /* Rosewood */
+    --sidebar-gradient-end: #A8978A !important; /* Light Taupe */
+    --header-background: #F4EDE8 !important; /* Light Taupe */
+    --header-border: #A8978A !important; /* Light Taupe Border */
+    --button-bg: #6D3F1F !important; /* Rosewood */
+    --button-hover-bg: #4E2A1C !important; /* Darker Rosewood */
+    --button-disabled-bg: #D8CFC4 !important; /* Light Taupe */
+    --button-disabled-text: #A8978A !important; /* Light Taupe */
+    --button-disabled-border: #B25C5C !important; /* Rosewood Border */
+    --progress-bar-bg: #6D3F1F !important; /* Rosewood */
+    --tooltip-background: #D8CFC4 !important; /* Light Taupe */
+    --tooltip-border: #A8978A !important; /* Light Taupe Border */
+    --tag-matching-bg: #6D3F1F !important; /* Rosewood */
+    --tag-non-matching-bg: #A8978A !important; /* Light Taupe */
+    
+    --keyword-bar-bg: #F4EDE8 !important; /* Light Taupe */
+    --keyword-bar-hover-bg: #6D3F1F !important; /* Rosewood */
+    --chart-color-matching: #6D3F1F !important; /* Rosewood for Matching Skills */
+    --chart-color-non-matching: #A8978A !important; /* Light Taupe for Non-Matching Skills */
+}
+
 
 /* beige-brown-tan-theme */
 .beige-brown-tan-theme {
@@ -169,6 +199,14 @@ header h1 {
     margin: 0;
     color: var(--primary-color);
 }
+/* Main Content Styles */
+.right-panel {
+    width: 100%;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #f8f9fa;
+}
+
 /* Header styles */
 .header {
     position: fixed;
@@ -304,6 +342,7 @@ header h1 {
     border-radius: 5px;
     overflow: hidden;
     margin-top: 20px;
+    display: none;
 }
 
 .progress-bar {
@@ -366,8 +405,8 @@ header h1 {
     color: var(--secondary-color);
     padding: 6px 12px;
     border-radius: 20px;
-    font-size: 11px;
-    font-weight: 400;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -473,4 +512,50 @@ canvas {
     justify-content: center;
     font-size: 2rem; /* Adjust size if needed */
     color: #333; /* Icon color */
+}
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Pushes the coffee button to the far right */
+    align-items: center; /* Vertically centers the buttons */
+    margin-top: 20px; /* Space above the buttons */
+}
+
+/* Container for the first two buttons to ensure they stay together */
+.button-group {
+    display: flex;
+    gap: 10px; /* Space between the first two buttons */
+}
+
+/* Specific styling for Buy Me a Coffee button */
+.buy-coffee-btn {
+    background-color: #FFD700; /* Yellow background */
+    color: #333; /* Dark text color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.buy-coffee-btn i.material-icons {
+    margin-right: 8px; /* Space between icon and text */
+    font-size: 20px;
+}
+
+.buy-coffee-btn:hover {
+    background-color: #FFC107; /* Slightly darker yellow on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
+}
+
+.buy-coffee-btn:focus {
+    outline: none; /* Remove default outline */
+}
+
+.buy-coffee-btn:active {
+    background-color: #FFB300; /* Even darker yellow when pressed */
 }

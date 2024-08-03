@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Page</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    #dropin-container {
+      margin-bottom: 20px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .button-group button {
+      background: none;
+      color: #007bff;
+      border: 2px solid #007bff;
+      border-radius: 4px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      margin: 0 5px;
+    }
+
+    .button-group button:hover {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    .button-group button:nth-child(2) {
+      border-color: #28a745;
+      color: #28a745;
+    }
+
+    .button-group button:nth-child(2):hover {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    .button-group button:nth-child(3) {
+      border-color: #ffc107;
+      color: #ffc107;
+    }
+
+    .button-group button:nth-child(3):hover {
+      background-color: #ffc107;
+      color: #fff;
+    }
+
+    .change-mind-button {
+      background: none;
+      color: #dc3545;
+      border: 2px solid #dc3545;
+      border-radius: 4px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      margin-top: 20px;
+    }
+
+    .change-mind-button:hover {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    .error-message {
+      color: #dc3545;
+      margin-top: 20px;
+      display: none;
+    }
+
+    input[type="hidden"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Make a Donation</h1>
+    <div id="dropin-container"></div>
+    <div class="button-group">
+      <button data-amount="3">Donate $3</button>
+      <button data-amount="5">Donate $5</button>
+      <button data-amount="10">Donate $10</button>
+    </div>
+    <button id="change-mind-button" class="change-mind-button">Change My Mind</button>
+    <p id="error-message" class="error-message">Please enter payment details before donating.</p>
+    <input type="hidden" id="amount" name="amount" value="">
+  </div>
+
+  <script src="https://js.braintreegateway.com/web/dropin/1.43.0/js/dropin.min.js"></script>
+  <script>
+    var client_token = "{{ client_token }}";
+
+    braintree.dropin.create({
+      authorization: client_token,
+      container: document.getElementById('dropin-container'),
+      paypal: {
+        flow: 'checkout'
+      }
+    }, function (err, instance) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      const donateButtons = document.querySelectorAll('button[data-amount]');
+      donateButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const selectedAmount = button.dataset.amount;
+          document.getElementById('amount').value = selectedAmount;
+
+          // Show error message if payment details are not entered
+          instance.requestPaymentMethod(function (err, payload) {
+            if (err) {
+              console.error(err);
+              document.getElementById('error-message').style.display = 'block';
+              return;
+            }
+
+            document.getElementById('error-message').style.display = 'none';
+
+            fetch('/process_payment', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                payment_method_nonce: payload.nonce,
+                amount: document.getElementById('amount').value
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                setTimeout(() => {
+                  window.location.href = '/thank_you';
+                }, 2000); // Redirect after 2 seconds
+              } else {
+                alert(data.error);
+              }
+            });
+          });
+        });
+      });
+
+      // Handle the "Change My Mind" button
+      document.getElementById('change-mind-button').addEventListener('click', () => {
+        window.location.href = '/index'; // Redirect to index route
+      });
+    });
+  </script>
+</body>
+</html>

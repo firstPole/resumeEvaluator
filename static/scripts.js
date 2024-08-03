@@ -46,6 +46,14 @@ $(document).ready(function() {
         $('#reset-button').prop('disabled', !resumeFile && !jobDescription);
     }
 
+    $(document).ready(function() {
+        $('#checkout-button').click(function() {
+          console.log("inside dropin UI");
+          window.location.href = '/dropin';
+        });
+      });
+
+
     $('#resume-form').on('submit', function(event) {
         event.preventDefault();
 
@@ -69,6 +77,8 @@ $(document).ready(function() {
         }, 200);
 
         var formData = new FormData(this);
+        formData.append('resume_file', $('#resume_file')[0].files[0]);
+        formData.append('job_description', $('#job_description').val());
         console.log('FormData:', formData); // Log FormData for debugging
 
         $.ajax({
@@ -234,4 +244,6 @@ $(document).ready(function() {
 
     // Initial check to set the button state
     updateResetButtonState();
+   
+
 });
