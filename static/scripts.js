@@ -1,6 +1,7 @@
 $(document).ready(function() {
     var matchChartInstance = null;
 
+    // Function to reset the form and UI elements
     function resetForm() {
         console.log('Resetting form...');
         $('#resume-form')[0].reset(); // Reset form fields
@@ -46,13 +47,11 @@ $(document).ready(function() {
         $('#reset-button').prop('disabled', !resumeFile && !jobDescription);
     }
 
-    $(document).ready(function() {
-        $('#checkout-button').click(function() {
-          console.log("inside dropin UI");
-          window.location.href = '/dropin';
-        });
-      });
-
+    $('#checkout-button').click(function() {
+        $("#progress-bar").hide(); // Ensure progress bar is hidden
+        console.log("inside dropin UI");
+        window.location.href = '/dropin';
+    });
 
     $('#resume-form').on('submit', function(event) {
         event.preventDefault();
@@ -80,6 +79,13 @@ $(document).ready(function() {
         formData.append('resume_file', $('#resume_file')[0].files[0]);
         formData.append('job_description', $('#job_description').val());
         console.log('FormData:', formData); // Log FormData for debugging
+
+        function updateExtractionResults(data) {
+            $('#extracted-email').text(data.email ? data.email : 'Not available');
+            $('#extracted-phone').text(data.phone_number ? data.phone_number : 'Not available');
+            $('#extracted-visa').text(data.visa_info ? data.visa_info : 'Not available');
+            $('#extraction-results').show();
+        }
 
         $.ajax({
             url: '/evaluate',
@@ -233,6 +239,9 @@ $(document).ready(function() {
 
     $('#reset-button').on('click', function() {
         resetForm();
+        $("#result").hide(); // Hide result
+        $("#progress-bar").hide(); // Hide progress bar
+        $("#checkout-button").prop("disabled", false); // Enable checkout button
         // Disable the reset button after reset
         $(this).prop('disabled', true);
     });
@@ -244,6 +253,4 @@ $(document).ready(function() {
 
     // Initial check to set the button state
     updateResetButtonState();
-   
-
 });

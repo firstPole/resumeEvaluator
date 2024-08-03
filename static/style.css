@@ -513,17 +513,24 @@ canvas {
     font-size: 2rem; /* Adjust size if needed */
     color: #333; /* Icon color */
 }
+/* Container for buttons */
 .button-container {
     display: flex;
-    justify-content: space-between; /* Pushes the coffee button to the far right */
-    align-items: center; /* Vertically centers the buttons */
+    justify-content: space-between; /* Distribute space between buttons */
+    align-items: center; /* Vertically center the buttons */
     margin-top: 20px; /* Space above the buttons */
 }
 
-/* Container for the first two buttons to ensure they stay together */
-.button-group {
-    display: flex;
-    gap: 10px; /* Space between the first two buttons */
+/* Button styling */
+.evaluate-button,
+.reset-button,
+.buy-coffee-btn {
+    margin-right: 10px; /* Space between buttons */
+}
+
+/* Ensure the last button does not have extra margin */
+.button-container .buy-coffee-btn {
+    margin-right: 0;
 }
 
 /* Specific styling for Buy Me a Coffee button */

@@ -1,7 +1,5 @@
 import logging
-from text_processing import (extract_text_from_docx, extract_text_from_pdf, preprocess_text,
-                             extract_skills, calculate_matching_score, filter_relevant_skills,
-                             count_tag_occurrences, update_resume_with_tags_using_llm, save_text_to_docx)
+from text_processing import *
 from sentiment_analysis import analyze_job_description, perform_sentiment_analysis
 import os
 import uuid
@@ -207,6 +205,11 @@ def evaluate_resume():
         if count > 0:
             keyword_density.append({"keyword": keyword, "density": count})
 
+    email = extract_email(job_description)
+    phone_number = extract_phone_number(job_description)
+    visa_info = extract_visa_info(job_description)
+    
+    
     session['unique_id'] = str(uuid.uuid4())
     session['resume_text'] = resume_text
     session['missing_skills'] = list(missing_skills)
@@ -221,7 +224,10 @@ def evaluate_resume():
             'emphasis': job_analysis['emphasis_teamwork'],
             'social_responsibility': job_analysis['social_responsibility'],
             'keyword_density': keyword_density
-        }
+        },
+        'email': email,
+        'phone_number': phone_number,
+        'visa_info': visa_info
     })
 
 

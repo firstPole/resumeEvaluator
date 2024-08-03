@@ -10,6 +10,7 @@ from nltk.tokenize import word_tokenize
 from collections import Counter
 from nltk.corpus import stopwords
 import openai
+import re
 # Load the spaCy model for entity extraction
 nlp = spacy.load("en_core_web_md")
 
@@ -158,3 +159,18 @@ def generate_personalized_recommendations(resume_text, job_description, matched_
 
     recommendations = response.choices[0].message['content'].strip()
     return recommendations
+
+def extract_email(text):
+    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    emails = re.findall(email_pattern, text)
+    return emails[0] if emails else None
+
+def extract_phone_number(text):
+    phone_pattern = r'\+?\d[\d -]{8,12}\d'
+    phones = re.findall(phone_pattern, text)
+    return phones[0] if phones else None
+
+def extract_visa_info(text):
+    visa_pattern = r'visa\s*(?:sponsorship|support|assistance)?\s*(?:yes|no)'
+    visa_matches = re.findall(visa_pattern, text, re.IGNORECASE)
+    return visa_matches[0].lower() if visa_matches else None
