@@ -15,6 +15,32 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <!-- Bootstrap JS -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <style>
+    /* Spinner styles */
+    .spinner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      display: none; /* Hide by default */
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Hide the spinner and error message by default */
+    #error-message {
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <div class="wrapper">
@@ -28,10 +54,11 @@
           <button data-amount="5">Donate $5</button>
         </div>
         <button id="change-mind-button" class="change-mind-button">Change My Mind</button>
-    <p id="error-message" class="error-message">Please enter payment details before donating.</p>
-    <input type="hidden" id="amount" name="amount" value="">
+        <p id="error-message" class="error-message">Please enter payment details before donating.</p>
+        <input type="hidden" id="amount" name="amount" value="">
       </div>
     </div>
+    <div class="spinner" id="spinner"></div>
     {% include 'footer.html' %}
   </div>
   
@@ -57,11 +84,15 @@
           const selectedAmount = button.dataset.amount;
           document.getElementById('amount').value = selectedAmount;
 
+          // Show spinner
+          document.getElementById('spinner').style.display = 'block';
+
           // Show error message if payment details are not entered
           instance.requestPaymentMethod(function (err, payload) {
             if (err) {
               console.error(err);
               document.getElementById('error-message').style.display = 'block';
+              document.getElementById('spinner').style.display = 'none'; // Hide spinner
               return;
             }
 
@@ -79,6 +110,9 @@
             })
             .then(response => response.json())
             .then(data => {
+              // Hide spinner
+              document.getElementById('spinner').style.display = 'none';
+
               if (data.success) {
                 setTimeout(() => {
                   window.location.href = '/thank_you';
@@ -86,6 +120,10 @@
               } else {
                 alert(data.error);
               }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              document.getElementById('spinner').style.display = 'none'; // Hide spinner on error
             });
           });
         });
