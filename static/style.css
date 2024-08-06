@@ -154,6 +154,7 @@ body {
 
 html, body {
     height: 100%;
+    margin: 0;
 }
 
 /* Ensure the sidebar is positioned correctly and spans the full height */
@@ -566,3 +567,30 @@ canvas {
 .buy-coffee-btn:active {
     background-color: #FFB300; /* Even darker yellow when pressed */
 }
+footer {
+    height: 60px; /* Same height as in footer.css */
+    background-color: var(--footer-background-color);
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+}
+.extraction-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+}
+
+.extraction-card .card-body {
+    padding: 1rem;
+}
+
+.extraction-card strong {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.extraction-item {
+    margin-bottom: 1rem;
+}
+
+

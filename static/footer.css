@@ -1,0 +1,110 @@
+/* Footer Styling */
+.footer {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    padding: 1rem 0; /* Reduced padding */
+    border-top: 1px solid #e0e0e0;
+    width: 100%; /* Ensures footer spans the full width */
+    position: absolute; /* Ensure it stays at the bottom */
+    left: 0; /* Align to the left */
+    bottom: 0; /* Align to the bottom */
+}
+
+.footer .container-fluid {
+    padding: 0 2rem; /* Adjust padding to the container */
+}
+
+.footer p {
+    margin-bottom: 0;
+}
+
+.footer a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer a:hover {
+    color: #343a40;
+}
+
+/* Feedback Button */
+.feedback-btn {
+    background-color: #FFFFFF; /* White background */
+    color: #000000; /* Black text */
+    border: 1px solid #000000; /* Black border */
+    border-radius: 4px; /* Slightly rounded corners */
+    padding: 5px 10px; /* Reduced padding */
+    font-size: 14px; /* Adjust font size */
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-btn i {
+    margin-right: 8px;
+}
+
+.feedback-btn:hover {
+    background-color: #F0F0F0; /* Light grey on hover */
+    cursor: pointer;
+}
+
+/* Feedback Modal */
+.feedback-modal-content {
+    border-radius: 8px; /* Rounded corners */
+    background-color: #FFFFFF; /* White background */
+    color: #000000; /* Black text */
+    border: 1px solid #000000; /* Black border */
+}
+
+.feedback-modal-header {
+    border-bottom: 1px solid #000000; /* Black border */
+    padding-bottom: 15px;
+}
+
+.feedback-modal-close {
+    color: #000000; /* Black close button */
+}
+
+.feedback-modal-body {
+    padding-top: 10px;
+}
+
+.feedback-submit-btn {
+    background-color: #FFFFFF; /* White background */
+    color: #000000; /* Black text */
+    border: 1px solid #000000; /* Black border */
+    border-radius: 4px;
+    padding: 5px 10px; /* Reduced padding */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.feedback-submit-btn:hover {
+    background-color: #F0F0F0; /* Light grey on hover */
+}
+
+/* Modal Responsive */
+@media (max-width: 576px) {
+    .feedback-modal-content {
+        width: 90%;
+    }
+}
+
+/* Ensure full height layout for proper footer positioning */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+}

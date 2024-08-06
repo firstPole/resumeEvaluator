@@ -11,6 +11,8 @@ from collections import Counter
 from nltk.corpus import stopwords
 import openai
 import re
+from textblob import TextBlob
+import transformers
 # Load the spaCy model for entity extraction
 nlp = spacy.load("en_core_web_md")
 
@@ -45,9 +47,15 @@ def extract_skills(text):
     doc = nlp(text)
     skills = set()
     for ent in doc.ents:
-        if ent.label_ in ['ORG', 'PRODUCT', 'SKILL']:
-            skills.add(ent.text.strip())
+        if ent.label_ in ['ORG', 'PRODUCT', 'WORK_OF_ART', 'EVENT']:  # Add more labels as needed
+            skills.add(ent.text.lower())
     return skills
+    
+    # Add additional skill extraction logic if necessary
+    # Example: Use a pre-defined skill dictionary or additional NLP techniques
+    
+    return skills
+
 
 def get_bert_embeddings(text):
     inputs = tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=512)
@@ -55,18 +63,68 @@ def get_bert_embeddings(text):
         outputs = bert_model(**inputs)
     return outputs.last_hidden_state.mean(dim=1).numpy()
 
+
+
+import transformers
+import torch
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+def calculate_jaccard_similarity(text1, text2):
+    set1 = set(text1.lower().split())
+    set2 = set(text2.lower().split())
+    intersection = len(set1 & set2)
+    union = len(set1 | set2)
+    return intersection / union if union != 0 else 0
+
 def calculate_matching_score(resume_text, job_description):
-    vectorizer = TfidfVectorizer(stop_words='english')
+    # Extract skills from resume and job description
+    resume_skills = extract_skills(resume_text)
+    job_skills = extract_skills(job_description)
+
+    # Calculate skills overlap
+    skills_overlap = len(resume_skills & job_skills) / len(job_skills) if job_skills else 0
+
+    # TF-IDF Vectorization
+    vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 3))
     vectors = vectorizer.fit_transform([resume_text, job_description])
     tfidf_similarity = cosine_similarity(vectors[0:1], vectors[1:2])[0][0]
     
-    resume_embeddings = get_bert_embeddings(resume_text)
-    job_embeddings = get_bert_embeddings(job_description)
-    semantic_similarity = cosine_similarity(resume_embeddings, job_embeddings)[0][0]
+    # BERT Embeddings
+    model = transformers.AutoModel.from_pretrained('bert-base-uncased')
+    tokenizer = transformers.AutoTokenizer.from_pretrained('bert-base-uncased')
+    resume_inputs = tokenizer(resume_text, return_tensors='pt', truncation=True, padding=True)
+    job_inputs = tokenizer(job_description, return_tensors='pt', truncation=True, padding=True)
     
-    final_score = (tfidf_similarity + semantic_similarity) / 2.0
+    with torch.no_grad():
+        resume_embeddings = model(**resume_inputs).last_hidden_state.mean(dim=1)
+        job_embeddings = model(**job_inputs).last_hidden_state.mean(dim=1)
+    semantic_similarity = cosine_similarity(resume_embeddings.numpy(), job_embeddings.numpy())[0][0]
+    
+    # Additional Metrics
+    jaccard_similarity = calculate_jaccard_similarity(resume_text, job_description)
+    
+    # Enhanced Thresholds
+    tfidf_threshold = 0.4
+    semantic_threshold = 0.5
+    jaccard_threshold = 0.3
+    
+    # Calculate Final Score with Minimum Score Handling
+    if tfidf_similarity < tfidf_threshold and semantic_similarity < semantic_threshold and jaccard_similarity < jaccard_threshold:
+        final_score = 0.1  # Set a very low score if no significant match is found
+    else:
+        # Weighted Average Calculation
+        final_score = (0.4 * tfidf_similarity + 0.4 * semantic_similarity + 0.2 * jaccard_similarity)
+    
+    # Adjust final score based on skills overlap
+    if skills_overlap == 0:
+        final_score *= 0.1  # Decrease significantly if no skills overlap
+    
+    # Ensure final score is between 10% and 100%
+    final_score = max(final_score, 0.1)
     
     return final_score * 100
+
 
 
 def filter_relevant_skills(matching_tags, non_matching_tags):
@@ -170,7 +228,28 @@ def extract_phone_number(text):
     phones = re.findall(phone_pattern, text)
     return phones[0] if phones else None
 
+
 def extract_visa_info(text):
-    visa_pattern = r'visa\s*(?:sponsorship|support|assistance)?\s*(?:yes|no)'
+    # Define patterns to match visa-related sentences
+    visa_pattern = r'\b(visa|assistance|sponsorship|support)\b.*?[.?!]'
     visa_matches = re.findall(visa_pattern, text, re.IGNORECASE)
-    return visa_matches[0].lower() if visa_matches else None
+    
+    if not visa_matches:
+        return 'No Visa Information Found'
+    
+    # Analyze sentiment of each extracted sentence
+    for sentence in visa_matches:
+        blob = TextBlob(sentence)
+        sentiment = blob.sentiment.polarity
+        
+        # Sentiment polarity:
+        # -1 to -0.1: Negative
+        #  0 to 0.1: Neutral
+        #  0.1 to 1: Positive
+        if sentiment < 0:
+            return 'Visa Sponsorship Not Provided'
+        elif sentiment > 0:
+            return 'Visa Sponsorship Provided'
+    
+    # If sentiment is neutral or unclear
+    return 'Unclear Visa Information'

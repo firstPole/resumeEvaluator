@@ -4,52 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thank You</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Material Icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='thankyoustyle.css') }}">
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2BN713JG7N"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-        .thank-you-container {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .thank-you-container h1 {
-            color: #28a745; /* Green color */
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .thank-you-container p {
-            font-size: 1.1rem;
-            color: #555;
-            margin-bottom: 30px;
-        }
-
-        .thank-you-container .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-
-        .thank-you-container .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-    </style>
+  gtag('config', 'G-2BN713JG7N');
+</script>
 </head>
 <body>
     <div class="thank-you-container">
@@ -64,5 +38,6 @@
             window.location.href = '/index';
         }, 5000); // 5000 milliseconds = 5 seconds
     </script>
+    {% include 'footer.html' %}
 </body>
 </html>

@@ -5,117 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Page</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .container {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      padding: 20px;
-      width: 100%;
-      max-width: 500px;
-      text-align: center;
-    }
-
-    #dropin-container {
-      margin-bottom: 20px;
-    }
-
-    .button-group {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 20px;
-    }
-
-    .button-group button {
-      background: none;
-      color: #007bff;
-      border: 2px solid #007bff;
-      border-radius: 4px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
-      margin: 0 5px;
-    }
-
-    .button-group button:hover {
-      background-color: #007bff;
-      color: #fff;
-    }
-
-    .button-group button:nth-child(2) {
-      border-color: #28a745;
-      color: #28a745;
-    }
-
-    .button-group button:nth-child(2):hover {
-      background-color: #28a745;
-      color: #fff;
-    }
-
-    .button-group button:nth-child(3) {
-      border-color: #ffc107;
-      color: #ffc107;
-    }
-
-    .button-group button:nth-child(3):hover {
-      background-color: #ffc107;
-      color: #fff;
-    }
-
-    .change-mind-button {
-      background: none;
-      color: #dc3545;
-      border: 2px solid #dc3545;
-      border-radius: 4px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
-      margin-top: 20px;
-    }
-
-    .change-mind-button:hover {
-      background-color: #dc3545;
-      color: #fff;
-    }
-
-    .error-message {
-      color: #dc3545;
-      margin-top: 20px;
-      display: none;
-    }
-
-    input[type="hidden"] {
-      display: none;
-    }
-  </style>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Material Icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='paymentstyle.css') }}">
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Make a Donation</h1>
-    <div id="dropin-container"></div>
-    <div class="button-group">
-      <button data-amount="3">Donate $3</button>
-      <button data-amount="5">Donate $5</button>
-      <button data-amount="10">Donate $10</button>
-    </div>
-    <button id="change-mind-button" class="change-mind-button">Change My Mind</button>
+  <div class="wrapper">
+    <div class="content">
+      <div class="container">
+        <h1>Make a Donation</h1>
+        <div id="dropin-container"></div>
+        <div class="button-group">
+          <button data-amount="1">Donate $1</button>
+          <button data-amount="3">Donate $3</button>
+          <button data-amount="5">Donate $5</button>
+        </div>
+        <button id="change-mind-button" class="change-mind-button">Change My Mind</button>
     <p id="error-message" class="error-message">Please enter payment details before donating.</p>
     <input type="hidden" id="amount" name="amount" value="">
+      </div>
+    </div>
+    {% include 'footer.html' %}
   </div>
-
+  
   <script src="https://js.braintreegateway.com/web/dropin/1.43.0/js/dropin.min.js"></script>
   <script>
     var client_token = "{{ client_token }}";

@@ -1,0 +1,88 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Clean and professional font */
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.left-panel {
+    width: 70%;
+    background: linear-gradient(135deg, #1c1c1c, #4d4d4d); /* Black to light black gradient */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px;
+}
+
+.left-panel .brand {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 3.5em; /* Increase size for more impact */
+    font-weight: 800; /* Bold for impact */
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4); /* Subtle shadow for sophistication */
+}
+
+.left-panel .title-container {
+    margin-top: 20px;
+}
+
+.left-panel h1 {
+    font-size: 2.5em; /* Adjusted size to fit the branding */
+    margin: 0;
+}
+
+.right-panel {
+    width: 30%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.right-panel h2 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff; /* White background */
+    color: #333; /* Dark text color for contrast */
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    border: 1px solid #ddd; /* Light border for a flat look */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: background-color 0.3s, box-shadow 0.3s;
+    font-weight: 600; /* Slightly bold text for emphasis */
+}
+
+.btn-google:hover {
+    background-color: #f1f1f1; /* Slightly darker on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+}
+
+.btn-google img {
+    margin-right: 8px; /* Already present */
+    width: 20px; /* Adjust width as needed */
+    height: 20px; /* Adjust height as needed */
+  }

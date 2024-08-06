@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Error</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="alert alert-danger">
+            <h4 class="alert-heading">An Error Occurred</h4>
+            <p><strong>Reason:</strong> {{ error_reason }}</p>
+            <p><strong>Description:</strong> {{ error_description }}</p>
+            <p><strong>Token:</strong></p>
+            <pre>{{ token }}</pre>
+        </div>
+    </div>
+</body>
+</html>

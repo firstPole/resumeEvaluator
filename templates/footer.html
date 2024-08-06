@@ -1,0 +1,62 @@
+<!-- Footer -->
+<footer class="footer mt-5 py-4 bg-light">
+    <div class="container-fluid">
+        <div class="row align-items-center justify-content-between">
+            <!-- Footer Text -->
+            <div class="col-md-6 text-center text-md-left mb-2 mb-md-0">
+                <p class="mb-0 text-muted">&copy; 2024 AI Resume Evaluator. All rights reserved.</p>
+            </div>
+
+            <!-- Footer Links and Feedback Button -->
+            <div class="col-md-6 d-flex justify-content-center justify-content-md-end">
+                <ul class="list-unstyled mb-0 d-flex align-items-center">
+                    <li class="mx-3">
+                        <a href="privacy_policy.html" class="text-muted">Privacy Policy</a>
+                    </li>
+                    <li>
+                        <button type="button" class="btn feedback-btn" data-toggle="modal" data-target="#feedbackModal">
+                            <i class="material-icons">feedback</i> Feedback
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content feedback-modal-content">
+            <div class="modal-header feedback-modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel">We Value Your Feedback</h5>
+                <button type="button" class="close feedback-modal-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body feedback-modal-body">
+                <form id="feedback-form" method="post" action="{{ url_for('feedback') }}">
+                    <div class="form-group">
+                        <label for="feedback_category">Category</label>
+                        <select class="form-control" id="feedback_category" name="feedback_category" required>
+                            <option value="">Select a category</option>
+                            <option value="UI/UX">UI/UX</option>
+                            <option value="Functionality">Functionality</option>
+                            <option value="Performance">Performance</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="feedback_text">Feedback</label>
+                        <textarea class="form-control" id="feedback_text" name="feedback_text" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="feedback_email">Your Email (Optional)</label>
+                        <input type="email" class="form-control" id="feedback_email" name="feedback_email" placeholder="Enter your email">
+                    </div>
+                    <button type="submit" class="btn feedback-submit-btn">Submit Feedback</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

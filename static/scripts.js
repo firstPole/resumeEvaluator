@@ -18,6 +18,7 @@ $(document).ready(function() {
         $('#progress-text').text('0%'); // Reset progress text
         $('#matchText').empty(); // Clear match text
         $('#matchScoreText').empty(); // Clear match score text
+        $('#improvementSuggestions').hide(); // Hide improvement suggestions
 
         // Destroy the existing Chart.js instance
         if (matchChartInstance) {
@@ -40,6 +41,16 @@ $(document).ready(function() {
         // Disable the reset button after reset
         $('#reset-button').prop('disabled', true);
     }
+
+    $(document).ready(function() {
+        $('#feedback-form').submit(function(e) {
+            e.preventDefault();
+            const feedback = $('#feedback-text').val();
+            // Handle the feedback submission (e.g., via AJAX)
+            alert('Thank you for your feedback: ' + feedback);
+            $('#feedbackModal').modal('hide');
+        });
+    });
 
     function updateResetButtonState() {
         const resumeFile = $('#resume_file').val(); // Assuming file input has ID `resume_file`
@@ -81,9 +92,16 @@ $(document).ready(function() {
         console.log('FormData:', formData); // Log FormData for debugging
 
         function updateExtractionResults(data) {
-            $('#extracted-email').text(data.email ? data.email : 'Not available');
-            $('#extracted-phone').text(data.phone_number ? data.phone_number : 'Not available');
-            $('#extracted-visa').text(data.visa_info ? data.visa_info : 'Not available');
+            console.log('Update Extraction Results:', data); // Log the data to check its structure
+        
+            // Check if data is defined and has the expected properties
+            var email = data && data.email ? data.email : 'No Data Available';
+            var phoneNumber = data && data.phone_number ? data.phone_number : 'No Data Available';
+            var visaInfo = data && data.visa_info ? data.visa_info : 'No Data Available';
+        
+            $('#extracted-email').text(email);
+            $('#extracted-phone').text(phoneNumber);
+            $('#extracted-visa').text(visaInfo);
             $('#extraction-results').show();
         }
 
@@ -95,6 +113,10 @@ $(document).ready(function() {
             processData: false,
             success: function(response) {
                 console.log('Response:', response); // Log the response for debugging
+                
+                // Update extraction results
+                updateExtractionResults(response);
+
                 $('#progress-bar').hide();
                 $('#result').show();
 
@@ -175,7 +197,8 @@ $(document).ready(function() {
                 console.log('Chart created:', matchChartInstance); // Log chart creation
 
                 var matchText = matchScore > 90 ? 'Strong Match' :
-                                matchScore >= 70 ? 'Good Match' : 'Weak Match';
+                                matchScore >= 70 ? 'Good Match' : 
+                                matchScore >= 50 ? 'Weak Match' : 'Very Weak Match';
                 $('#matchText').text(matchText);
                 $('#matchScoreText').text(matchScore + '%');
 
@@ -213,44 +236,68 @@ $(document).ready(function() {
                         '</div>'
                     );
                 } else {
-                    console.error('Sentiment analysis data is missing or undefined.');
+                    $('#sentiment-analysis-result').text('No Data Available');
                 }
 
                 // Display keyword density
                 $('#keywordDensity').empty();
-                keywordDensity.forEach(function(item) {
-                    $('#keywordDensity').append('<div class="keyword-bar">' + item.keyword + ': ' + item.density + '</div>');
-                });
+                if (keywordDensity.length > 0) {
+                    keywordDensity.forEach(function(item) {
+                        $('#keywordDensity').append('<div class="keyword-bar">' + item.keyword + ': ' + item.density + '</div>');
+                    });
+                } else {
+                    $('#keywordDensity').append('No Data Available');
+                }
 
                 // Update job analysis sections
-                $('#languageTone').text(response.job_analysis.language_tone);
-                $('#emphasis').text(response.job_analysis.emphasis);
-                $('#socialResponsibility').text(response.job_analysis.social_responsibility);
+                $('#languageTone').text(response.job_analysis.language_tone || 'No Data Available');
+                $('#emphasis').text(response.job_analysis.emphasis || 'No Data Available');
+                $('#socialResponsibility').text(response.job_analysis.social_responsibility || 'No Data Available');
 
-                // Enable reset button
+                // Display improvement suggestions if score is below 50%
+                if (matchScore < 50) {
+                    var suggestions = `
+                        <h4>Improvement Suggestions:</h4>
+                        <p>Your resume and the job description have a low match score. Here are some tips to improve it:</p>
+                        <ul>
+                            <li>Ensure your resume includes keywords from the job description.</li>
+                            <li>Highlight relevant skills and experiences that align with the job requirements.</li>
+                            <li>Customize your resume for each job application.</li>
+                        </ul>
+                    `;
+                    $('#improvementSuggestions').html(suggestions).show();
+                } else {
+                    $('#improvementSuggestions').hide();
+                }
+
+                // Enable the reset button
                 $('#reset-button').prop('disabled', false);
+                updateResetButtonState();
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
                 $('#progress-bar').hide();
-                console.error('An error occurred during evaluation.');
+                alert('An error occurred. Please try again.');
             }
         });
     });
 
-    $('#reset-button').on('click', function() {
+    // Reset button event handler
+    $('#reset-button').click(function() {
         resetForm();
-        $("#result").hide(); // Hide result
-        $("#progress-bar").hide(); // Hide progress bar
-        $("#checkout-button").prop("disabled", false); // Enable checkout button
-        // Disable the reset button after reset
-        $(this).prop('disabled', true);
     });
 
-    // Monitor form inputs to enable/disable the reset button
-    $('#resume_file, #job_description').on('input change', function() {
+    // Update reset button state on form change
+    $('#resume_file, #job_description').on('change keyup', function() {
         updateResetButtonState();
     });
 
-    // Initial check to set the button state
-    updateResetButtonState();
+    // Handle showing the modal and form reset
+    $('#show-feedback-modal').click(function() {
+        $('#feedbackModal').modal('show');
+    });
+
+    $('#feedbackModal').on('hidden.bs.modal', function () {
+        resetForm(); // Reset the form when modal is closed
+    });
 });

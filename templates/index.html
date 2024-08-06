@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Evaluation</title>
+    <title>AI-Powered Resume Evaluation Tool - Optimize Your Job Applications</title>
+    <meta name="description" content="Evaluate your resume with our AI-powered tool. Upload your resume and job description to get detailed analysis and matching skills. Improve your job applications with expert feedback.">
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Chart.js -->
@@ -20,6 +22,15 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Custom Scripts -->
     <script src="https://js.stripe.com/v3/"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2BN713JG7N"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2BN713JG7N');
+    </script>
 </head>
 <body>
     <!-- Fixed Header -->
@@ -28,7 +39,7 @@
             <div class="profile-and-logout">
                 <div class="profile-icon">
                     {% if user.profile_pic %}
-                        <img src="{{ user.profile_pic }}" alt="Profile Picture">
+                        <img src="{{ user.profile_pic }}" alt="Profile picture of {{ user.name }}">
                     {% else %}
                         <i class="material-icons">account_circle</i>
                     {% endif %}
@@ -36,7 +47,7 @@
                 <div class="welcome-message">
                     <span>Welcome, {{ user.name }}</span>
                 </div>
-                <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+                <a href="{{ url_for('logout') }}" class="logout-button">Sign Out</a>
             </div>
         </div>
     </header>
@@ -45,47 +56,67 @@
         <div class="row">
             <!-- Main Content -->
             <main role="main" class="col-md-12 ml-sm-auto px-4 right-panel">
-                <p></p>
                 <div class="row">
                     <!-- Upload Section -->
                     <div class="col-md-12">
-                        <h5 class="text-center">AI Powered Resume Evaluation</h5>
+                        <h2 class="text-center">AI-Powered Resume Evaluation</h2>
                         <div class="card">
                             <div class="card-body">
                                 <form id="resume-form" enctype="multipart/form-data">
                                     <div class="form-group">
-                                        <label for="resume_file" class="text-center-strong">Upload Resume (PDF or DOCX):</label>
+                                        <label for="resume_file" class="text-center-strong">Upload Your Resume (PDF or DOCX):</label>
                                         <input type="file" class="form-control-file" id="resume_file" name="resume_file" accept=".pdf,.docx" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="job_description" class="text-center-strong">Job Description:</label>
+                                        <label for="job_description" class="text-center-strong">Enter Job Description:</label>
                                         <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
                                     </div>
                                     <!-- Button Container -->
                                     <div class="button-container">
                                         <div class="button-group">
-                                            <button type="submit" class="evaluate-button">Evaluate</button>
-                                            <button type="button" id="reset-button" class="reset-button" disabled>Reset</button>
+                                            <button type="submit" class="evaluate-button">Evaluate Now</button>
+                                            <button type="button" id="reset-button" class="reset-button" disabled>Reset Form</button>
                                         </div>
                                     </div>
                                     <div id="progress-bar" class="progress-container mt-3">
                                         <div class="progress-bar" id="progress-bar-inner">
-                                            <span class="progress-text" id="progress-text">Evaluating...</span>
+                                            <span class="progress-text" id="progress-text">Evaluating Your Resume...</span>
                                         </div>
                                     </div>
                                 </form>
                                 <!-- Button for Coffee payment outside the form -->
                                 <div class="d-flex justify-content-end mt-3">
                                     <button id="checkout-button" class="buy-coffee-btn">
-                                        <i class="material-icons">credit_card</i> Buy Me a Coffee
+                                        <i class="material-icons">credit_card</i> Support Us - Buy a Coffee
                                     </button>
                                 </div>
                                 <!-- Extraction Results Section -->
                                 <div id="extraction-results" class="mt-3" style="display: none;">
-                                    <h3>Key Important Details:</h3>
-                                    <p><strong>Email:</strong> <span id="extracted-email">Not Available</span></p>
-                                    <p><strong>Phone:</strong> <span id="extracted-phone">Not Available</span></p>
-                                    <p><strong>Visa Info:</strong> <span id="extracted-visa">Not Available</span></p>
+                                    <h3>Extracted Key Information:</h3>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="extraction-item">
+                                                        <strong>Email Address:</strong>
+                                                        <p id="extracted-email">No Information Available</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="extraction-item">
+                                                        <strong>Phone Number:</strong>
+                                                        <p id="extracted-phone">No Information Available</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="extraction-item">
+                                                        <strong>Visa Information:</strong>
+                                                        <p id="extracted-visa">No Information Available</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -106,14 +137,14 @@
                                     <div class="col-md-8">
                                         <div class="card card-full-width">
                                             <div class="card-body">
-                                                <h5 class="no-top-margin">Matching Skills <span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Skills that match the job description requirements.</div>
-                                                </span></h5>
-                                                <div class="tags" id="matchingTags"></div>
-                                                <h5 class="mt-4">Non-Matching Skills <span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Skills that do not match the job description requirements.</div>
-                                                </span></h5>
-                                                <div class="tags" id="non-matching-tags"></div>
+                                                <h4>Skills Matching Job Requirements <span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">These are the skills that align with the job description criteria.</div>
+                                                </span></h4>
+                                                <div class="tags" id="matchingTags">No Data Available</div>
+                                                <h4 class="mt-4">Skills Not Matching Job Requirements <span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">These are the skills that do not meet the job description criteria.</div>
+                                                </span></h4>
+                                                <div class="tags" id="non-matching-tags">No Data Available</div>
                                             </div>
                                         </div>
                                     </div>
@@ -122,40 +153,32 @@
                                     <div class="col-md-4">
                                         <div class="card">
                                             <div class="card-body">
-                                                <h4>Job Analysis</h4>
+                                                <h4>Job Analysis Insights</h4>
                                                 <strong>Resume Sentiment:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Overall Sentiment analysis of your Resume</div>
+                                                    <div class="tooltip-content">Overall sentiment of your resume based on the analysis.</div>
                                                 </span>
-                                                <div id="sentiment-analysis-result"></div>
+                                                <div id="sentiment-analysis-result">No Data Available</div>
 
                                                 <p></p>
                                                 <strong>Language Tone:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">The overall tone used in the job description (formal, casual, etc.).</div>
+                                                    <div class="tooltip-content">The tone used in the job description, such as formal or casual.</div>
                                                 </span>
-                                                <div id="languageTone"></div>
+                                                <div id="language-tone">No Data Available</div>
 
                                                 <p></p>
-                                                <strong>Emphasis:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Whether the job description emphasizes teamwork or individual contribution.</div>
+                                                <strong>Keyword Density:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">Frequency of important keywords in the job description.</div>
                                                 </span>
-                                                <div id="emphasis"></div>
-
-                                                <p></p>
-                                                <strong>Social Responsibility:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">The company’s commitment to social responsibility, such as sustainability and diversity.</div>
-                                                </span>
-                                                <div id="socialResponsibility"></div>
+                                                <div id="keyword-density">No Data Available</div>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-md-8">
-                                        <div class="card">
+                                        <div class="card card-full-width">
                                             <div class="card-body">
-                                                <h4>Keyword Density</h4>
-                                                <strong>Keyword Density:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">The frequency of important keywords in the job description.</div>
-                                                </span>
-                                                <div id="keywordDensity"></div>
+                                                <h4>Additional Information</h4>
+                                                <p id="additional-info">No Data Available</p>
                                             </div>
                                         </div>
                                     </div>
@@ -167,7 +190,14 @@
             </main>
         </div>
     </div>
+    <!-- Footer -->
+    <footer class="footer mt-4">
+        <div class="container">
+            <p>&copy; 2024 AI Resume Evaluation Tool. All rights reserved.</p>
+        </div>
+    </footer>
 
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <!-- Custom Scripts -->
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
