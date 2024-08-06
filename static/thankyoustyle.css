@@ -1,22 +1,22 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+
+html, body {
+    height: 100%;
     margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Style for the thank you container */
 .thank-you-container {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    width: 100%;
-    max-width: 500px;
+    padding: 20px;
 }
+
 
 .thank-you-container h1 {
     color: #28a745; /* Green color */

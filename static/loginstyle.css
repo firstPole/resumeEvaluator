@@ -10,17 +10,25 @@ body, html {
     height: 100vh;
 }
 
+/* Style for the title container */
+.title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Right-align items in the column */
+    text-align: right; /* Right-align text within the container */
+}
+
+/* Center the title container in the left panel */
 .left-panel {
     width: 70%;
-    background: linear-gradient(135deg, #1c1c1c, #4d4d4d); /* Black to light black gradient */
+    /* background: linear-gradient(135deg, #1c1c1c, #4d4d4d);  Black to light black gradient */
+    background: black; /* Black color */
     color: white;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
     padding: 40px;
+    box-sizing: border-box; /* Ensures padding does not affect width calculation */
 }
 
 .left-panel .brand {
@@ -36,11 +44,23 @@ body, html {
 
 .left-panel .title-container {
     margin-top: 20px;
+    width: 100%; /* Take full width of the left panel */
+    max-width: 600px; /* Adjust as needed */
+}
+
+.left-panel h1,
+.left-panel h6 {
+    margin: 0; /* Removes default margin */
+    padding: 0; /* Removes default padding */
 }
 
 .left-panel h1 {
     font-size: 2.5em; /* Adjusted size to fit the branding */
-    margin: 0;
+    margin-bottom: 10px; /* Space between title and subtitle */
+}
+
+.left-panel h6 {
+    font-size: 1.5em; /* Adjusted size for subtitle */
 }
 
 .right-panel {
@@ -85,4 +105,4 @@ body, html {
     margin-right: 8px; /* Already present */
     width: 20px; /* Adjust width as needed */
     height: 20px; /* Adjust height as needed */
-  }
+}

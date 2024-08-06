@@ -1,13 +1,12 @@
 /* Footer Styling */
-.footer {
+footer {
     background-color: #f8f9fa;
-    color: #6c757d;
-    padding: 1rem 0; /* Reduced padding */
-    border-top: 1px solid #e0e0e0;
-    width: 100%; /* Ensures footer spans the full width */
-    position: absolute; /* Ensure it stays at the bottom */
-    left: 0; /* Align to the left */
-    bottom: 0; /* Align to the bottom */
+    padding: 10px;
+    text-align: center;
+    position: relative; /* Ensures it's positioned relative to its normal position */
+    bottom: 0;
+    width: 100%;
+    clear: both; /* Clears any floated elements above it */
 }
 
 .footer .container-fluid {

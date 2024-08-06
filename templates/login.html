@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='loginstyle.css') }}">
-    <title>AI Powered Resume Evaluation - Login</title>
+    <title>Land Your Dream Job with AI-powered Resume Evaluation</title>
    
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2BN713JG7N"></script>
@@ -21,13 +21,16 @@
         <div class="left-panel">
             <div class="brand">Vuna</div>
             <div class="title-container">
-                <h1>AI Powered Resume Evaluation</h1>
+                <h1>Land Your Dream Job</h1>
+                <sub>AI-Powered Job Match Assistant</sub>
+                
             </div>
         </div>
         <div class="right-panel">
-            <h2></h2>  <a href="{{ url_for('login') }}" class="btn-google">
+            <h2></h2>  
+            <a href="{{ url_for('login') }}" class="btn-google">
                 <img src="/static/google_icon.png" alt="Google Logo"> Sign In with Google
-              </a>
+            </a>
         </div>
     </div>
     {% include 'footer.html' %}

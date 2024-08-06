@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Powered Resume Evaluation Tool - Optimize Your Job Applications</title>
-    <meta name="description" content="Evaluate your resume with our AI-powered tool. Upload your resume and job description to get detailed analysis and matching skills. Improve your job applications with expert feedback.">
+    <title>Land Your Dream Job with AI-powered Resume Evaluation</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
+     <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Chart.js -->
@@ -23,23 +22,24 @@
     <!-- Custom Scripts -->
     <script src="https://js.stripe.com/v3/"></script>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2BN713JG7N"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2BN713JG7N"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-      gtag('config', 'G-2BN713JG7N');
-    </script>
+  gtag('config', 'G-2BN713JG7N');
+</script>
 </head>
 <body>
     <!-- Fixed Header -->
     <header class="header">
         <div class="header-content">
+            <div class="brand">Vuna</div>
             <div class="profile-and-logout">
                 <div class="profile-icon">
                     {% if user.profile_pic %}
-                        <img src="{{ user.profile_pic }}" alt="Profile picture of {{ user.name }}">
+                        <img src="{{ user.profile_pic }}" alt="Profile Picture">
                     {% else %}
                         <i class="material-icons">account_circle</i>
                     {% endif %}
@@ -47,7 +47,7 @@
                 <div class="welcome-message">
                     <span>Welcome, {{ user.name }}</span>
                 </div>
-                <a href="{{ url_for('logout') }}" class="logout-button">Sign Out</a>
+                <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
             </div>
         </div>
     </header>
@@ -56,10 +56,12 @@
         <div class="row">
             <!-- Main Content -->
             <main role="main" class="col-md-12 ml-sm-auto px-4 right-panel">
+                <p></p>
                 <div class="row">
                     <!-- Upload Section -->
                     <div class="col-md-12">
-                        <h2 class="text-center">AI-Powered Resume Evaluation</h2>
+                        <h3 class="text-center">AI-Powered Resume Evaluation System</h3>
+                        <div class="small-and-center">Boost your chances of getting hired with an AI-powered evaluation of your resume against job descriptions.</div><p></p>
                         <div class="card">
                             <div class="card-body">
                                 <form id="resume-form" enctype="multipart/form-data">
@@ -68,62 +70,64 @@
                                         <input type="file" class="form-control-file" id="resume_file" name="resume_file" accept=".pdf,.docx" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="job_description" class="text-center-strong">Enter Job Description:</label>
+                                        <label for="job_description" class="text-center-strong">Paste Your Job Description Here:</label>
                                         <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
                                     </div>
                                     <!-- Button Container -->
                                     <div class="button-container">
                                         <div class="button-group">
-                                            <button type="submit" class="evaluate-button">Evaluate Now</button>
-                                            <button type="button" id="reset-button" class="reset-button" disabled>Reset Form</button>
+                                            <button type="submit" class="evaluate-button">Analyze My Resume</button>
+                                            <button type="button" id="reset-button" class="reset-button" disabled>Clear Fields</button>
                                         </div>
                                     </div>
                                     <div id="progress-bar" class="progress-container mt-3">
                                         <div class="progress-bar" id="progress-bar-inner">
-                                            <span class="progress-text" id="progress-text">Evaluating Your Resume...</span>
+                                            <span class="progress-text" id="progress-text">Evaluating...</span>
                                         </div>
                                     </div>
                                 </form>
                                 <!-- Button for Coffee payment outside the form -->
                                 <div class="d-flex justify-content-end mt-3">
                                     <button id="checkout-button" class="buy-coffee-btn">
-                                        <i class="material-icons">credit_card</i> Support Us - Buy a Coffee
+                                        <i class="material-icons">credit_card</i> Buy Me a Coffee
                                     </button>
                                 </div>
-                                <!-- Extraction Results Section -->
-                                <div id="extraction-results" class="mt-3" style="display: none;">
-                                    <h3>Extracted Key Information:</h3>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="extraction-item">
-                                                        <strong>Email Address:</strong>
-                                                        <p id="extracted-email">No Information Available</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="extraction-item">
-                                                        <strong>Phone Number:</strong>
-                                                        <p id="extracted-phone">No Information Available</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="extraction-item">
-                                                        <strong>Visa Information:</strong>
-                                                        <p id="extracted-visa">No Information Available</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                           <!-- Extraction Results Section -->
+<div id="extraction-results" class="mt-3" style="display: none;">
+    <h3>Extracted Information from Job Description:</h3>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="extraction-item">
+                        <strong>Email:</strong>
+                        <p id="extracted-email">Not Found</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="extraction-item">
+                        <strong>Phone:</strong>
+                        <p id="extracted-phone">Not Found</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="extraction-item">
+                        <strong>Visa Info:</strong>
+                        <p id="extracted-visa">Not Found</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
                             </div>
                         </div>
                         <!-- Evaluation Results -->
                         <div id="result" class="card result-panel" style="display: none;">
                             <div class="card-body">
-                                <h3 class="text-center">Evaluation Result - <span id="matchText"></span></h3>
+                                <h3 class="text-center">Your Resume Match Score: <span id="matchText"></span></h3>
                                 <div class="row">
                                     <!-- Chart and Matching Skills Section -->
                                     <div class="col-md-4">
@@ -137,14 +141,14 @@
                                     <div class="col-md-8">
                                         <div class="card card-full-width">
                                             <div class="card-body">
-                                                <h4>Skills Matching Job Requirements <span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">These are the skills that align with the job description criteria.</div>
-                                                </span></h4>
-                                                <div class="tags" id="matchingTags">No Data Available</div>
-                                                <h4 class="mt-4">Skills Not Matching Job Requirements <span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">These are the skills that do not meet the job description criteria.</div>
-                                                </span></h4>
-                                                <div class="tags" id="non-matching-tags">No Data Available</div>
+                                                <h5 class="no-top-margin">Skills that Match the Job<span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">Skills that match the job description requirements.</div>
+                                                </span></h5>
+                                                <div class="tags" id="matchingTags">Not Found</div>
+                                                <h5 class="mt-4">Skills Not Mentioned in the Job <span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">Skills that do not match the job description requirements.</div>
+                                                </span></h5>
+                                                <div class="tags" id="non-matching-tags">Not Found</div>
                                             </div>
                                         </div>
                                     </div>
@@ -153,32 +157,40 @@
                                     <div class="col-md-4">
                                         <div class="card">
                                             <div class="card-body">
-                                                <h4>Job Analysis Insights</h4>
-                                                <strong>Resume Sentiment:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Overall sentiment of your resume based on the analysis.</div>
+                                                <h4>Job Analysis</h4>
+                                                <strong>Overall Tone of Your Resume:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">Overall Sentiment analysis of your Resume</div>
                                                 </span>
-                                                <div id="sentiment-analysis-result">No Data Available</div>
+                                                <div id="sentiment-analysis-result">Not Found</div>
 
                                                 <p></p>
-                                                <strong>Language Tone:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">The tone used in the job description, such as formal or casual.</div>
+                                                <strong>Job Description Tone:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">The overall tone used in the job description (formal, casual, etc.).</div>
                                                 </span>
-                                                <div id="language-tone">No Data Available</div>
+                                                <div id="languageTone">Not Found</div>
 
                                                 <p></p>
-                                                <strong>Keyword Density:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Frequency of important keywords in the job description.</div>
+                                                <strong>Focus on Teamwork or Individual Work:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">Whether the job description emphasizes teamwork or individual contribution.</div>
                                                 </span>
-                                                <div id="keyword-density">No Data Available</div>
+                                                <div id="emphasis">Not Found</div>
+
+                                                <p></p>
+                                                <strong>Social Responsibility:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">The company’s commitment to social responsibility, such as sustainability and diversity.</div>
+                                                </span>
+                                                <div id="socialResponsibility">Not Found</div>
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="col-md-8">
-                                        <div class="card card-full-width">
+                                        <div class="card">
                                             <div class="card-body">
-                                                <h4>Additional Information</h4>
-                                                <p id="additional-info">No Data Available</p>
+                                                <h4>Keyword occurrence</h4>
+                                                <strong>Keyword occurrence in Job Description:</strong><span class="tooltip-icon">ℹ️
+                                                    <div class="tooltip-content">The frequency of important keywords in the job description.</div>
+                                                </span>
+                                                <div id="keywordDensity">Not Found</div>
                                             </div>
                                         </div>
                                     </div>
@@ -190,14 +202,8 @@
             </main>
         </div>
     </div>
-    <!-- Footer -->
-    <footer class="footer mt-4">
-        <div class="container">
-            <p>&copy; 2024 AI Resume Evaluation Tool. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Custom Scripts -->
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
+   
+    {% include 'footer.html' %}
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>
