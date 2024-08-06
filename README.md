@@ -2,16 +2,17 @@
 
 ## Overview
 
-The Resume Evaluator is a Flask-based web application designed to analyze and match resumes against job descriptions. It uses NLP and AI techniques to evaluate resumes and job descriptions, providing insights into matching skills, keyword density, and overall compatibility. The application generates a visually appealing report with charts and tags to help users improve their resumes and better align them with job requirements.
+The Resume Evaluator is a web application built with Flask that uses NLP and AI techniques to analyze and match resumes against job descriptions. This tool helps users assess how well their resumes align with job requirements, visualize matching skills, and improve their resumes based on detailed analysis.
 
 ## Features
 
-- **Resume and Job Description Upload**: Allows users to upload resumes and job descriptions for evaluation.
-- **Matching Score**: Provides a score indicating how well the resume matches the job description.
-- **Tag Analysis**: Displays matching and non-matching skills and qualifications.
-- **Keyword Density**: Shows the density of important keywords in the resume and job description.
+- **Resume and Job Description Upload**: Users can upload their resumes and job descriptions in various formats.
+- **Matching Score**: Calculates and displays a matching score indicating the compatibility between the resume and the job description.
+- **Tag Analysis**: Shows relevant matching and non-matching skills and qualifications.
+- **Keyword Density**: Analyzes and displays the frequency of important keywords.
 - **Visual Reports**: Includes charts and graphs to visualize matching scores and keyword density.
-- **Updated Resume Generation**: Offers an option to generate and download an updated resume.
+- **Updated Resume Generation**: Provides an option to generate an updated resume based on the analysis.
+- **Tooltip Information**: Includes tooltips for additional information on matching tags and keyword density.
 
 ## Installation
 
@@ -20,50 +21,67 @@ The Resume Evaluator is a Flask-based web application designed to analyze and ma
 - Python 3.x
 - Flask
 - OpenAI API Key (for NLP and AI features)
-- Other dependencies as listed in `requirements.txt`
+- Required Python packages listed in `requirements.txt`
 
 ### Clone the Repository
+
+First, clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/firstPole/resumeEvaluator.git
 cd resumeEvaluator
+Set Up a Virtual Environment
+Create a virtual environment to manage dependencies:
 
-**### Install Dependencies**
-Create a virtual environment and install the required packages:
-
+bash
+Copy code
 python -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+Install Dependencies
+Install the required Python packages:
+
+bash
+Copy code
 pip install -r requirements.txt
+Configuration
+OpenAI API Key: Obtain an OpenAI API key and set it in your environment variables or configuration file.
 
-**### Configuration**
-Obtain an OpenAI API key and add it to your environment variables or configuration file.
-Ensure that you have the necessary permissions to read and write files if you're working with file uploads.
+File Uploads: Ensure you have the necessary permissions to read and write files for handling uploads.
 
-**### Usage**
+Usage
 Running the Application
-To start the Flask server, use the following command:
+To start the Flask application, run:
 
+bash
+Copy code
 python app.py
+Open your web browser and go to http://127.0.0.1:5000/ to access the application.
 
-Open your web browser and navigate to http://127.0.0.1:5000/ to access the application.
+How to Use
+Upload Documents: Use the upload forms to submit your resume and the job description you want to match it against.
+Evaluate: Click the 'Evaluate' button to start the analysis.
+Review Results: The application will display the matching score, relevant tags, and keyword density.
+Generate Updated Resume: If desired, click the 'Generate Updated Resume' button to download an improved version of your resume based on the analysis.
+File Structure
+app.py: Main file containing the Flask application code.
+index.html: HTML file for the main interface of the application.
+optimized_result.html: HTML file for displaying the results of the evaluation.
+requirements.txt: Contains a list of dependencies required for the project.
+static/: Directory for static files such as CSS and JavaScript.
+templates/: Directory for HTML templates used in the application.
+Contributing
+Contributions to the Resume Evaluator are welcome! If you have suggestions or improvements, please fork the repository and submit a pull request.
 
-**Uploading Resumes and Job Descriptions**
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-Upload your resume and job description using the provided forms.
-Click the 'Evaluate' button to analyze the documents.
-Review the matching score, tags, and keyword density.
-Optionally, generate and download an updated resume using the 'Generate Updated Resume' button.
+Acknowledgments
+Flask for the web framework.
+OpenAI for providing NLP and AI capabilities.
+Chart.js for the charting library used in visualizations.
+For any questions or issues, please open an issue on the GitHub repository.
 
-**File Structure**
+css
+Copy code
 
-app.py: Main Flask application file.
-index.html: HTML file for the main application interface.
-optimized_result.html: HTML file for displaying the evaluation results.
-requirements.txt: List of Python dependencies.
-README.md: Project documentation.
-**Contributing**
-Contributions are welcome! Please fork the repository, make your changes, and submit a pull request. Ensure that your changes are well-documented and tested.
-
-**Contact**
-
-Feel free to customize the contact details and any other sections to fit your project’s specifics.
+This version includes all necessary setup instructions, usage guidelines, and additional information in a clear and structured format.
