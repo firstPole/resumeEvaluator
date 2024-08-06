@@ -30,58 +30,54 @@ First, clone the repository to your local machine:
 ```bash
 git clone https://github.com/firstPole/resumeEvaluator.git
 cd resumeEvaluator
-Set Up a Virtual Environment
-Create a virtual environment to manage dependencies:
 
+## Set Up a Virtual Environment
+Create a virtual environment to manage dependencies:
 bash
-Copy code
+
 python -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-Install Dependencies
-Install the required Python packages:
 
+## Install Dependencies
+
+### Install the required Python packages:
 bash
-Copy code
+
 pip install -r requirements.txt
-Configuration
-OpenAI API Key: Obtain an OpenAI API key and set it in your environment variables or configuration file.
 
-File Uploads: Ensure you have the necessary permissions to read and write files for handling uploads.
-
+## Configuration
+1.	OpenAI API Key: Obtain an OpenAI API key and set it in your environment variables or configuration file.
+2.	File Uploads: Ensure you have the necessary permissions to read and write files for handling uploads.
 Usage
 Running the Application
 To start the Flask application, run:
-
 bash
-Copy code
+
 python app.py
 Open your web browser and go to http://127.0.0.1:5000/ to access the application.
-
 How to Use
-Upload Documents: Use the upload forms to submit your resume and the job description you want to match it against.
-Evaluate: Click the 'Evaluate' button to start the analysis.
-Review Results: The application will display the matching score, relevant tags, and keyword density.
-Generate Updated Resume: If desired, click the 'Generate Updated Resume' button to download an improved version of your resume based on the analysis.
+1.	Upload Documents: Use the upload forms to submit your resume and the job description you want to match it against.
+2.	Evaluate: Click the 'Evaluate' button to start the analysis.
+3.	Review Results: The application will display the matching score, relevant tags, and keyword density.
+4.	Generate Updated Resume: If desired, click the 'Generate Updated Resume' button to download an improved version of your resume based on the analysis.
 File Structure
-app.py: Main file containing the Flask application code.
-index.html: HTML file for the main interface of the application.
-optimized_result.html: HTML file for displaying the results of the evaluation.
-requirements.txt: Contains a list of dependencies required for the project.
-static/: Directory for static files such as CSS and JavaScript.
-templates/: Directory for HTML templates used in the application.
+•	app.py: Main file containing the Flask application code.
+•	index.html: HTML file for the main interface of the application.
+•	optimized_result.html: HTML file for displaying the results of the evaluation.
+•	requirements.txt: Contains a list of dependencies required for the project.
+•	static/: Directory for static files such as CSS and JavaScript.
+•	templates/: Directory for HTML templates used in the application.
 Contributing
 Contributions to the Resume Evaluator are welcome! If you have suggestions or improvements, please fork the repository and submit a pull request.
-
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
-
 Acknowledgments
-Flask for the web framework.
-OpenAI for providing NLP and AI capabilities.
-Chart.js for the charting library used in visualizations.
+•	Flask for the web framework.
+•	OpenAI for providing NLP and AI capabilities.
+•	Chart.js for the charting library used in visualizations.
 For any questions or issues, please open an issue on the GitHub repository.
-
 css
-Copy code
+
 
 This version includes all necessary setup instructions, usage guidelines, and additional information in a clear and structured format.
+
