@@ -53,8 +53,8 @@ First, clone the repository to your local machine:
 ## Usage
 - Running the Application
 To start the Flask application, run:
-        ```bash
-        python app.py
+    ```bash
+    python app.py
 
 Open your web browser and go to http://127.0.0.1:5000/ to access the application.
 
