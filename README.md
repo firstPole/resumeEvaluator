@@ -32,7 +32,7 @@ First, clone the repository to your local machine:
     cd resumeEvaluator
 
 ## Set Up a Virtual Environment
-    Create a virtual environment to manage dependencies:
+- Create a virtual environment to manage dependencies:
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
@@ -44,9 +44,9 @@ First, clone the repository to your local machine:
     pip install -r requirements.txt
 
 ## Configuration
-    1.	OpenAI API Key: Obtain an OpenAI API key and set it in your environment variables or configuration file.
-    2.	File Uploads: Ensure you have the necessary permissions to read and write files for handling uploads.
-    3. .env File: Create a .env file in the root directory of your project and add your OpenAI  API key and other environment variables. For example:
+1.	OpenAI API Key: Obtain an OpenAI API key and set it in your environment variables or configuration file.
+2.	File Uploads: Ensure you have the necessary permissions to read and write files for handling uploads.
+3. .env File: Create a .env file in the root directory of your project and add your OpenAI  API key and other environment variables. For example:
         ```bash 
         OPENAI_API_KEY=your_openai_api_key_here
 
