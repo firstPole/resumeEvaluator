@@ -26,7 +26,6 @@ The Resume Evaluator is a web application built with Flask that uses NLP and AI 
 ### Clone the Repository
 
 First, clone the repository to your local machine:
-
     ```bash
     git clone https://github.com/firstPole/resumeEvaluator.git
     cd resumeEvaluator
