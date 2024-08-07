@@ -1,6 +1,6 @@
 venv/
 uploads/
-.env
+.envcp
 temp/
 tree.txt
 __pycache__/
