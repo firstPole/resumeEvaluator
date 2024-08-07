@@ -73,8 +73,7 @@ First, clone the repository to your local machine:
     •	templates/: Directory for HTML templates used in the application.
 ## Contributing
     Contributions to the Resume Evaluator are welcome! If you have suggestions or improvements, please fork the repository and submit a pull request.
-## License
-    This project is licensed under the MIT License - see the LICENSE file for details.
+
 ## Acknowledgments
     •	Flask for the web framework.
     •	OpenAI for providing NLP and AI capabilities.
