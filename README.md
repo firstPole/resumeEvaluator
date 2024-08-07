@@ -38,8 +38,7 @@ First, clone the repository to your local machine:
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
 ## Install Dependencies
-
-### Install the required Python packages:
+- Install the required Python packages:
     ```bash
     pip install -r requirements.txt
 
