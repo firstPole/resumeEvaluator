@@ -51,18 +51,19 @@ First, clone the repository to your local machine:
 
 
 ## Usage
-    Running the Application
-    To start the Flask application, run:
+- Running the Application
+To start the Flask application, run:
         ```bash
         python app.py
 
-    Open your web browser and go to http://127.0.0.1:5000/ to access the application.
+Open your web browser and go to http://127.0.0.1:5000/ to access the application.
 
 ## How to Use
     1.	Upload Documents: Use the upload forms to submit your resume and the job description you want to match it against.
     2.	Evaluate: Click the 'Evaluate' button to start the analysis.
     3.	Review Results: The application will display the matching score, relevant tags, and keyword density.
     4.	Generate Updated Resume: If desired, click the 'Generate Updated Resume' button to download an improved version of your resume based on the analysis.
+
 ## File Structure
     •	app.py: Main file containing the Flask application code.
     •	index.html: HTML file for the main interface of the application.
@@ -70,6 +71,7 @@ First, clone the repository to your local machine:
     •	requirements.txt: Contains a list of dependencies required for the project.
     •	static/: Directory for static files such as CSS and JavaScript.
     •	templates/: Directory for HTML templates used in the application.
+
 ## Contributing
     Contributions to the Resume Evaluator are welcome! If you have suggestions or improvements, please fork the repository and submit a pull request.
 
@@ -78,7 +80,7 @@ First, clone the repository to your local machine:
     •	OpenAI for providing NLP and AI capabilities.
     •	Chart.js for the charting library used in visualizations.
     For any questions or issues, please open an issue on the GitHub repository.
-    css
 
-    This version includes all necessary setup instructions, usage guidelines, and additional information in a clear and structured format.
+
+This version includes all necessary setup instructions, usage guidelines, and additional information in a clear and structured format.
 
