@@ -1,9 +1,7 @@
 import spacy
 import numpy as np
-import torch
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from transformers import BertTokenizer, BertModel
 from docx import Document
 import PyPDF2
 from nltk.tokenize import word_tokenize
@@ -12,13 +10,9 @@ from nltk.corpus import stopwords
 import openai
 import re
 from textblob import TextBlob
-import transformers
-# Load the spaCy model for entity extraction
-nlp = spacy.load("en_core_web_md")
 
-# Load BERT for semantic analysis
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-bert_model = BertModel.from_pretrained('bert-base-uncased')
+# Load the spaCy model for entity extraction and embeddings
+nlp = spacy.load("en_core_web_md")
 
 # Ensure NLTK stopwords are downloaded
 import nltk
@@ -38,8 +32,6 @@ def extract_text_from_pdf(file_stream):
     except Exception as e:
         return None
 
-
-
 def preprocess_text(text):
     return ' '.join(text.split())
 
@@ -50,31 +42,16 @@ def extract_skills(text):
         if ent.label_ in ['ORG', 'PRODUCT', 'WORK_OF_ART', 'EVENT']:  # Add more labels as needed
             skills.add(ent.text.lower())
     return skills
-    
-    # Add additional skill extraction logic if necessary
-    # Example: Use a pre-defined skill dictionary or additional NLP techniques
-    
-    return skills
 
-
-def get_bert_embeddings(text):
-    inputs = tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=512)
-    with torch.no_grad():
-        outputs = bert_model(**inputs)
-    return outputs.last_hidden_state.mean(dim=1).numpy()
-
-
-
-import transformers
-import torch
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+def get_spacy_embeddings(text):
+    doc = nlp(text)
+    return doc.vector
 
 def calculate_jaccard_similarity(text1, text2):
-    set1 = set(text1.lower().split())
-    set2 = set(text2.lower().split())
-    intersection = len(set1 & set2)
-    union = len(set1 | set2)
+    set1 = set(text1.split())
+    set2 = set(text2.split())
+    intersection = len(set1.intersection(set2))
+    union = len(set1.union(set2))
     return intersection / union if union != 0 else 0
 
 def calculate_matching_score(resume_text, job_description):
@@ -90,16 +67,10 @@ def calculate_matching_score(resume_text, job_description):
     vectors = vectorizer.fit_transform([resume_text, job_description])
     tfidf_similarity = cosine_similarity(vectors[0:1], vectors[1:2])[0][0]
     
-    # BERT Embeddings
-    model = transformers.AutoModel.from_pretrained('bert-base-uncased')
-    tokenizer = transformers.AutoTokenizer.from_pretrained('bert-base-uncased')
-    resume_inputs = tokenizer(resume_text, return_tensors='pt', truncation=True, padding=True)
-    job_inputs = tokenizer(job_description, return_tensors='pt', truncation=True, padding=True)
-    
-    with torch.no_grad():
-        resume_embeddings = model(**resume_inputs).last_hidden_state.mean(dim=1)
-        job_embeddings = model(**job_inputs).last_hidden_state.mean(dim=1)
-    semantic_similarity = cosine_similarity(resume_embeddings.numpy(), job_embeddings.numpy())[0][0]
+    # spaCy Embeddings
+    resume_embedding = get_spacy_embeddings(resume_text)
+    job_embedding = get_spacy_embeddings(job_description)
+    semantic_similarity = cosine_similarity([resume_embedding], [job_embedding])[0][0]
     
     # Additional Metrics
     jaccard_similarity = calculate_jaccard_similarity(resume_text, job_description)
@@ -125,8 +96,6 @@ def calculate_matching_score(resume_text, job_description):
     
     return final_score * 100
 
-
-
 def filter_relevant_skills(matching_tags, non_matching_tags):
     return non_matching_tags
 
@@ -136,6 +105,7 @@ def get_keyword_density(text):
     tokens = [token for token in tokens if token.isalnum() and token not in stop_words]
     frequency = Counter(tokens)
     return frequency.most_common(8)
+
 def count_tag_occurrences(text, tags):
     stop_words = set(stopwords.words('english'))
     tokens = word_tokenize(text.lower())
@@ -228,7 +198,6 @@ def extract_phone_number(text):
     phones = re.findall(phone_pattern, text)
     return phones[0] if phones else None
 
-
 def extract_visa_info(text):
     # Define patterns to match visa-related sentences
     visa_pattern = r'\b(visa|assistance|sponsorship|support)\b.*?[.?!]'
@@ -251,5 +220,25 @@ def extract_visa_info(text):
         elif sentiment > 0:
             return 'Visa Sponsorship Provided'
     
-    # If sentiment is neutral or unclear
-    return 'Unclear Visa Information'
+    # If sentiment is neutral
+    return 'Visa Information Unclear'
+
+# # Example usage
+# resume_text = "Extracted text from resume"
+# job_description = "Extracted text from job description"
+# matched_skills = ["skill1", "skill2"]
+# missing_skills = ["skill3", "skill4"]
+
+# matching_score = calculate_matching_score(resume_text, job_description)
+# keyword_density = get_keyword_density(resume_text)
+# relevant_skills = filter_relevant_skills(matched_skills, missing_skills)
+# updated_resume_text = update_resume_with_tags_using_llm(resume_text, matched_skills)
+# skill_use_cases = get_skill_use_cases_using_llm(matched_skills)
+# recommendations = generate_personalized_recommendations(resume_text, job_description, matched_skills, missing_skills)
+
+# print(f"Matching Score: {matching_score}")
+# print(f"Keyword Density: {keyword_density}")
+# print(f"Relevant Skills: {relevant_skills}")
+# print(f"Updated Resume Text: {updated_resume_text}")
+# print(f"Skill Use Cases: {skill_use_cases}")
+# print(f"Personalized Recommendations: {recommendations}")
