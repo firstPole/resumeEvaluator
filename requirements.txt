@@ -77,7 +77,7 @@ packaging==24.1
 pandas==2.2.2
 pathlib==1.0.1
 pdfkit==1.0.0
-pdfminer.six==20191110
+pdfminer.six==20231228
 pdfplumber==0.11.2
 pillow==10.4.0
 portalocker==2.10.1
