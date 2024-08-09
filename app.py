@@ -9,38 +9,19 @@ import braintree
 from flask_mail import Mail, Message
 from text_processing import *
 from sentiment_analysis import *
-from boto3 import client  # Import boto3 client
+
 # Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-# Use AWS SSM to retrieve secrets
-def get_secret(secret_name):
-    ssm_client = client('ssm', region_name='your-region')
-    response = ssm_client.get_parameter(
-        Name=secret_name,
-        WithDecryption=True
-    )
-    return response['Parameter']['Value']
-
-app = Flask(__name__)
-app.secret_key = os.urandom(24)
-
-# Retrieve secrets from AWS SSM
-app.config['GOOGLE_ID'] = get_secret('GOOGLE_CLIENT_ID')
-app.config['GOOGLE_SECRET'] = get_secret('GOOGLE_CLIENT_SECRET')
-app.config['merchant_id'] = get_secret('merchant_id')
-app.config['public_key'] = get_secret('public_key')
-app.config['private_key'] = get_secret('private_key')
-
 # Use environment variables for client ID and secret
-# app.config['GOOGLE_ID'] = os.getenv('GOOGLE_CLIENT_ID')
-# app.config['GOOGLE_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
-# app.config['merchant_id'] = os.getenv('merchant_id')
-# app.config['public_key'] = os.getenv('public_key')
-# app.config['private_key'] = os.getenv('private_key')
+app.config['GOOGLE_ID'] = os.getenv('GOOGLE_CLIENT_ID')
+app.config['GOOGLE_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
+app.config['merchant_id'] = os.getenv('merchant_id')
+app.config['public_key'] = os.getenv('public_key')
+app.config['private_key'] = os.getenv('private_key')
 
 mail = Mail(app)
 
@@ -205,7 +186,6 @@ def evaluate_resume():
 
         sentiment_analysis = perform_sentiment_analysis(resume_text)
         match_score = calculate_matching_score(resume_text, job_description)
-        match_score =  round(match_score, 2)
 
         resume_skills = extract_skills(resume_text)
         job_skills = extract_skills(job_description)
@@ -291,5 +271,4 @@ def feedback():
 
 if __name__ == '__main__':
     # Set debug=False for production
-   # app.run(debug=False, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
-   app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
