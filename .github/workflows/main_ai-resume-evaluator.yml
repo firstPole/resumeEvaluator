@@ -24,7 +24,7 @@ jobs:
 
       - name: Upgrade pip to a specific version
         run: |
-          python -m pip install --upgrade "pip<24.1"  # Set pip to a version < 24.1
+          python -m pip install --upgrade "pip<24.2"  # Set pip to a version < 24.1
           
       - name: Create and start virtual environment
         run: |
