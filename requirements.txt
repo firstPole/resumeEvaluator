@@ -128,7 +128,7 @@ SpeechRecognition==3.8.1
 srsly==2.4.8
 sympy==1.13.1
 textblob==0.18.0.post0
-textract==1.6.5
+textract
 thinc==8.2.5
 threadpoolctl==3.5.0
 tokenizers==0.19.1
