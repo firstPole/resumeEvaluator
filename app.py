@@ -16,6 +16,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+
 # Use environment variables for client ID and secret
 app.config['GOOGLE_ID'] = os.getenv('GOOGLE_CLIENT_ID')
 app.config['GOOGLE_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
@@ -186,6 +187,7 @@ def evaluate_resume():
 
         sentiment_analysis = perform_sentiment_analysis(resume_text)
         match_score = calculate_matching_score(resume_text, job_description)
+        match_score =  round(match_score, 2)
 
         resume_skills = extract_skills(resume_text)
         job_skills = extract_skills(job_description)
@@ -272,3 +274,4 @@ def feedback():
 if __name__ == '__main__':
     # Set debug=False for production
     app.run(debug=False, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
+   #app.run(debug=True)
