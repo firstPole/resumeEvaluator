@@ -35,6 +35,7 @@ Flask-Cors==4.0.1
 Flask-Mail==0.10.0
 Flask-Session==0.8.0
 fsspec==2024.6.1
+git-filter-repo==2.45.0
 google-api-core==2.19.1
 google-api-python-client==2.139.0
 google-auth==2.32.0
