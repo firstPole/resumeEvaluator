@@ -11,7 +11,7 @@ from text_processing import *
 from sentiment_analysis import *
 
 # Load environment variables from .env file
-load_dotenv()
+# load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
