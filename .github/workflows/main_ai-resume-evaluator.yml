@@ -22,10 +22,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Upgrade pip to a specific version
-        run: |
-          python -m pip install --upgrade pip
-          
       - name: Create and start virtual environment
         run: |
           python -m venv venv
@@ -66,19 +62,12 @@ jobs:
         run: unzip release.zip
 
       
-      # - name: Login to Azure
-      #   uses: azure/login@v2
-      #   with:
-      #     client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A3815863F11A44B5A905E4F341E6A4C0 }}
-      #     tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5084609EBAD74CB8ABAC14C5D073CE72 }}
-      #     subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BA97454DCB054EF8A5B12AD349B8CCB2 }}
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A3815863F11A44B5A905E4F341E6A4C0 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5084609EBAD74CB8ABAC14C5D073CE72 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BA97454DCB054EF8A5B12AD349B8CCB2 }}
-          environment: 'AzureCloud'
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_292233E1B20544B28822AA4D47FF8DC2 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_3252394FF2A345AA981596E26368AA19 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BE491B14850C44BD936B03F728EC50EC }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
