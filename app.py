@@ -3,12 +3,12 @@ import os
 import uuid
 import mimetypes
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory, flash
-from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 import braintree
 from flask_mail import Mail, Message
 from text_processing import *
 from sentiment_analysis import *
+import time 
 
 # Load environment variables from .env file
 # load_dotenv()
@@ -16,28 +16,12 @@ from sentiment_analysis import *
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-
-# Use environment variables for client ID and secret
-app.config['GOOGLE_ID'] = os.getenv('GOOGLE_CLIENT_ID')
-app.config['GOOGLE_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
+# Use environment variables for Braintree and mail configurations
 app.config['merchant_id'] = os.getenv('merchant_id')
 app.config['public_key'] = os.getenv('public_key')
 app.config['private_key'] = os.getenv('private_key')
 
 mail = Mail(app)
-
-oauth = OAuth(app)
-
-google = oauth.register(
-    name='google',
-    client_id=app.config['GOOGLE_ID'],
-    client_secret=app.config['GOOGLE_SECRET'],
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    api_base_url='https://www.googleapis.com/oauth2/v1/',
-    userinfo_endpoint='https://www.googleapis.com/oauth2/v3/userinfo',
-    client_kwargs={'scope': 'openid email profile'},
-    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration'
-)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -54,59 +38,13 @@ gateway = braintree.BraintreeGateway(
 
 @app.route('/')
 def home():
-    return render_template('login.html')
+    return redirect(url_for('index'))
 
 @app.route('/index')
 def index():
-    if 'google_token' in session:
-        token = session['google_token']
-        google_client = oauth.create_client('google')
-        try:
-            me = google_client.get('userinfo', token=token)
-            if me and me.json() and 'name' in me.json():
-                user_info = {
-                    'name': me.json()["name"],
-                    'profile_pic': me.json().get("picture")  # Get the profile picture URL
-                }
-                return render_template('index.html', user=user_info)
-            else:
-                return render_template('index.html', user={'name': 'User', 'profile_pic': ''})
-        except Exception as e:
-            logging.error(f"Error fetching user info: {e}")
-            return render_template('index.html', user={'name': 'User', 'profile_pic': ''})
-    return redirect(url_for('home'))
-
-@app.route('/login')
-def login():
-    redirect_uri = url_for('google_callback', _external=True)
-    return oauth.google.authorize_redirect(redirect_uri)
-
-@app.route('/logout')
-def logout():
-    session.pop('google_token', None)
-    session.pop('user', None)
-    return redirect(url_for('home'))
-
-@app.route('/google_callback')
-def google_callback():
-    token = None
-    try:
-        token = oauth.google.authorize_access_token()
-        if token is None:
-            error_reason = request.args.get('error_reason', 'unknown')
-            error_description = request.args.get('error_description', 'unknown')
-            return render_template('errtoken.html', error_reason='Exception', error_description=str(e), token=token)
-        logging.debug("Token received: %s", token)
-
-        if 'access_token' in token:
-            session['google_token'] = token
-            return redirect(url_for('index'))
-        else:
-            logging.error("Token does not contain 'access_token'")
-            return 'Error: Invalid token received.'
-    except Exception as e:
-        logging.error(f"Error during Google callback: {e}")
-        return render_template('errtoken.html', error_reason='Exception', error_description=str(e), token=token)
+    # Removed login check and user context
+    user = None
+    return render_template('index.html', user=user)
 
 def validate_file_type(file):
     mime_type, _ = mimetypes.guess_type(file.filename)
@@ -237,6 +175,7 @@ def evaluate_resume():
         logging.error(f"Error evaluating resume: {e}")
         return jsonify({'error': 'An error occurred while evaluating the resume.'}), 500
 
+
 @app.route('/feedback', methods=['POST'])
 def feedback():
     feedback_category = request.form.get('feedback_category')
@@ -273,5 +212,5 @@ def feedback():
 
 if __name__ == '__main__':
     # Set debug=False for production
-    app.run(debug=False, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
-   #app.run(debug=True)
+    #app.run(debug=False, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
+   app.run(debug=True)

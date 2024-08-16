@@ -57,7 +57,7 @@
 /* Red yellow theme */
 
 .blueshade-theme {
-    --primary-color: #000000 !important; /* Black */
+    --primary-color: #346888 !important; /* Black */
     --secondary-color: #FFFFFF !important; /* White */
     --accent-color: #CCCCCC !important; /* Light Gray */
     --highlight-color: #888888 !important; /* Medium Gray */
@@ -65,7 +65,7 @@
     --text-color: #000000 !important; /* Black */
     --sidebar-gradient-start: #000000 !important; /* Black */
     --sidebar-gradient-end: #333333 !important; /* Dark Gray */
-    --header-background: #F9F9F9 !important; /* Very Light Gray */
+    --header-background: #004c6d !important; /* Very Light Gray */
     --header-border: #CCCCCC !important; /* Light Gray Border */
     --button-bg: #000000 !important; /* Black */
     --button-hover-bg: #333333 !important; /* Dark Gray */
@@ -75,13 +75,13 @@
     --progress-bar-bg: #000000 !important; /* Black */
     --tooltip-background: #FFFFFF !important; /* White */
     --tooltip-border: #CCCCCC !important; /* Light Gray Border */
-    --tag-matching-bg: #000000 !important; /* Black */
-    --tag-non-matching-bg: #888888 !important; /* Medium Gray */
+    --tag-matching-bg: #346888 !important; /* Black */
+    --tag-non-matching-bg: #7aa6c2 !important; /* Medium Gray */
     
     --keyword-bar-bg: #F0F0F0 !important; /* Very Light Gray */
     --keyword-bar-hover-bg: #000000 !important; /* Black */
-    --chart-color-matching: #000000 !important; /* Black for Matching Skills */
-    --chart-color-non-matching: #888888 !important; /* Medium Gray for Non-Matching Skills */
+    --chart-color-matching: #346888 !important; /* Black for Matching Skills */
+    --chart-color-non-matching: #c1e7ff!important; /* Medium Gray for Non-Matching Skills */
 
 }
 .rosewood-light-taupe-theme {
@@ -155,6 +155,7 @@ body {
 html, body {
     height: 100%;
     margin: 0;
+    overflow: hidden; /* Prevent scrolling */
 }
 
 /* Ensure the sidebar is positioned correctly and spans the full height */
@@ -192,8 +193,36 @@ main {
     box-sizing: border-box; /* Include padding in the height */
 }
 
+.header {
+    height: 150px; /* Adjust the height as needed */
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}/* Adjusting logo size */
+.vuna-logo {
+    width: 50px; /* Adjust width as needed */
+    height: auto; /* Maintains aspect ratio */
+    margin-right: 10px; /* Space between logo and title */
+}
 
+/* Adjusting header title size */
+.header-title {
+    font-size: 1.5rem; /* Adjust size as needed */
+    margin: 0;
+    line-height: 1.2; /* Ensures no extra space above/below text */
+}
 
+/* Adjusting brand container for proper alignment */
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.vuna-title {
+    font-size: 1.25rem; /* Adjust size of the "Vuna" text */
+    font-weight: bold;
+}
 
 header h1 {
     font-size: 1.25em;
@@ -228,6 +257,7 @@ header h1 {
     display: flex;
     justify-content: space-between; /* Space between brand and other content */
     align-items: center;
+    color: white;
 }
 
 /* Style for welcome message */
@@ -294,10 +324,10 @@ header h1 {
 
 /* Button Styles */
 .evaluate-button {
-    background-color: var(--button-bg);
+    background-color:#346888;
     color: var(--secondary-color);
     border: none;
-    border-radius: 5px;
+    border-radius: 0px;
     padding: 10px 20px;
     font-size: 16px;
     font-weight: bold;
@@ -307,14 +337,14 @@ header h1 {
     display: inline-block;
 }
 .evaluate-button:hover {
-    background-color: var(--button-hover-bg);
+    background-color: #7aa6c2;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 #reset-button {
-    background-color: var(--button-bg);
+    background-color: #346888;
     color: var(--secondary-color);
     border: none;
-    border-radius: 5px;
+    border-radius: 0px;
     padding: 10px 20px;
     font-size: 16px;
     font-weight: bold;
@@ -324,8 +354,8 @@ header h1 {
 
 /* Hover state */
 #reset-button:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
+    background-color: #7aa6c2;
+    border-color: #7aa6c2;
 }
 
 /* Disabled state */
@@ -393,8 +423,13 @@ header h1 {
 
 .text-center-strong {
     font-weight: bold;
+   
 }
-
+.label-text-center-strong {
+    font-weight: bold;
+    font-size: 22px;
+   
+}
 .tags {
     display: flex;
     flex-wrap: wrap;
@@ -514,12 +549,21 @@ canvas {
     font-size: 2rem; /* Adjust size if needed */
     color: #333; /* Icon color */
 }
-/* Container for buttons */
+.button-container-wrapper {
+    display: flex;
+    justify-content: flex-end; /* Aligns the button to the right */
+    margin-top: 15px;
+}
+
 .button-container {
     display: flex;
-    justify-content: space-between; /* Distribute space between buttons */
-    align-items: center; /* Vertically center the buttons */
-    margin-top: 20px; /* Space above the buttons */
+    justify-content: space-between; /* Distributes buttons evenly */
+    align-items: center; /* Aligns items vertically */
+    margin-bottom: 15px; /* Space below button-container */
+}
+
+.form-container {
+    position: relative;
 }
 
 /* Button styling */
@@ -535,38 +579,38 @@ canvas {
 }
 
 /* Specific styling for Buy Me a Coffee button */
-.buy-coffee-btn {
-    background-color: #FFD700; /* Yellow background */
-    color: #333; /* Dark text color */
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+.buy-coffee-button {
+    background-color: #346888; /* Use highlight color for emphasis */
+    color: white; /* Ensure text color is readable */
+    border: 1px solid var(--highlight-color); /* Border matching the button color */
+    border-radius: 0px; /* Rounded corners for a different look */
+    padding: 12px 24px; /* Adjust padding for a larger button */
+    font-size: 14px; /* Larger font size for prominence */
+    font-weight: bold; /* Make text bold */
+    display: flex; /* Flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    gap: 8px; /* Space between icon and text */
 }
 
-.buy-coffee-btn i.material-icons {
+.buy-coffee-button i.material-icons {
     margin-right: 8px; /* Space between icon and text */
     font-size: 20px;
 }
 
-.buy-coffee-btn:hover {
-    background-color: #FFC107; /* Slightly darker yellow on hover */
-    transform: scale(1.05); /* Slightly enlarge button on hover */
+.buy-coffee-button:hover {
+    background-color: #7aa6c2; /* Change background on hover */
+    border-color: var(--accent-color); /* Change border color on hover */
 }
 
-.buy-coffee-btn:focus {
+.buy-coffee-button:focus {
     outline: none; /* Remove default outline */
 }
 
-.buy-coffee-btn:active {
-    background-color: #FFB300; /* Even darker yellow when pressed */
+.buy-coffee-button:active {
+    background-color: #b8eac5; /* Even darker yellow when pressed */
 }
+
+
 footer {
     height: 60px; /* Same height as in footer.css */
     background-color: var(--footer-background-color);
@@ -602,6 +646,193 @@ footer {
 .brand {
     font-size: 1.5rem;
     font-weight: bold;
-    color: black;
+    color: #ffdf2b;
     /* Aligns text to the left within the brand container */
+}
+/* Container for the list */
+.impactful-bullets {
+    max-width: 600px; /* Limit the width of the list container */
+    margin: 0 auto; /* Center the container horizontally */
+}
+
+/* Style for the bullet list */
+.impactful-bullets ul {
+    list-style: none; /* Remove default bullets */
+    padding: 0;
+    margin: 0;
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(2, 1fr); /* Two columns layout */
+    gap: 20px; /* Space between items */
+}
+
+/* Style for each list item */
+.impactful-bullets li {
+    display: flex; /* Align items horizontally */
+    align-items: center; /* Center items vertically */
+    line-height: 1.5; /* Adjust line height for better readability */
+}
+
+.impactful-bullets i {
+    color: green; /* Green color for the tick mark */
+    margin-right: 10px; /* Space between tick mark and text */
+    font-size: 16px; /* Size of the tick mark */
+}
+
+.impactful-bullets strong {
+    font-size: 14px; /* Font size for the text, slightly smaller for compactness */
+}
+/* Modal Styling - Adjust layout and spacing for tags */
+.modal-content {
+    overflow: hidden; /* Ensure no overflow within the modal */
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px; /* Adjust spacing between tags */
+    margin-bottom: 20px; /* Add margin below tag sections */
+}
+
+.tags-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px; /* Adjust spacing between tags */
+}
+
+
+
+.keyword-density {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Adjust spacing between tags */
+    margin-bottom: 20px;
+    
+}
+.upload-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Adjust the button styles if needed */
+.upload-buttons-container .btn {
+    margin-left: 10px;
+}
+
+/* Position the Buy Me a Coffee button to the extreme right */
+.buy-coffee-button {
+    position: absolute;
+    right: 0; /* Aligns to the extreme right */
+    top: 0; /* Aligns to the top of the container */
+    margin-top: 0; /* Remove any top margin */
+}
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050; /* Ensure it is on top of other content */
+    display: none; /* Hidden by default */
+}
+
+.spinner-container {
+    text-align: center;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: .3em;
+    border-radius: 50%;
+    border-top-color: #fff; /* Spinner color */
+    margin-bottom: 10px; /* Space between spinner and text */
+}
+
+.spinner-text {
+    color: #fff;
+    font-size: 1.2rem; /* Adjust size if needed */
+    font-weight: bold;
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin-top: 20px;
+}
+.slider {
+    width: 100%;
+}
+.slider-label {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.slider-marker {
+    position: absolute;
+    top: 20px;
+    transform: translateX(-50%);
+    font-weight: bold;
+}
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+/* Reduce space between labels */
+.modal-body .text-center-strong {
+    margin-top: 0; /* Remove any top margin */
+    margin-bottom: 0; /* Remove any bottom margin */
+    padding-top: 0; /* Remove any top padding */
+    padding-bottom: 0; /* Remove any bottom padding */
+}   
+
+ /* Material design flat upload button */
+ .custom-file-upload {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #6200ea; /* Material Purple */
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-file-upload:hover {
+    background-color: #3700b3; /* Darker Purple */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.custom-file-upload .material-icons {
+    font-size: 20px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.custom-file-upload input[type="file"] {
+    display: none;
+}
+
+.custom-file-label {
+    cursor: pointer;
+    font-size: 16px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }

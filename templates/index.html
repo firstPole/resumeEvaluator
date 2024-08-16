@@ -4,53 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Land Your Dream Job with AI-powered Resume Evaluation</title>
+    <link rel="icon" href="{{ url_for('static', filename='VUNA.ico') }}" type="image/x-icon">
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- Custom Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-     <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Popper.js (required for Bootstrap dropdowns) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <!-- Bootstrap JavaScript -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom Scripts -->
-    <script src="https://js.stripe.com/v3/"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2BN713JG7N"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2BN713JG7N');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2BN713JG7N"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2BN713JG7N');
+    </script>
 </head>
 <body>
+    <div class="spinner-overlay" id="spinner-overlay">
+    <div class="spinner-container">
+        <div class="spinner-border text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-text">Evaluating...</div>
+    </div>
+</div>
+
     <!-- Fixed Header -->
-    <header class="header">
+     <!-- Fixed Header -->
+     <header class="header">
         <div class="header-content">
-            <div class="brand">Vuna</div>
-            <div class="profile-and-logout">
-                <div class="profile-icon">
-                    {% if user.profile_pic %}
-                        <img src="{{ user.profile_pic }}" alt="Profile Picture">
-                    {% else %}
-                        <i class="material-icons">account_circle</i>
-                    {% endif %}
-                </div>
-                <div class="welcome-message">
-                    <span>Welcome, {{ user.name }}</span>
-                </div>
-                <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+            <div class="brand d-flex align-items-center">
+                
+                <span style="font-size: 1.75rem; font-weight: bold;">VUNA</span>
+            </div>
+            <h4 class="text-center" style="font-size: 1.75rem; font-weight: bold;">AI-Powered Resume Evaluation in <5 Minutes @ FREE</h4>
+            
+                <div class="profile-and-logout">
+                <!-- Profile and logout options -->
             </div>
         </div>
     </header>
+    
 
     <div class="container-fluid">
         <div class="row">
@@ -60,137 +67,192 @@
                 <div class="row">
                     <!-- Upload Section -->
                     <div class="col-md-12">
-                        <h3 class="text-center">AI-Powered Resume Evaluation System</h3>
-                        <div class="small-and-center">Boost your chances of getting hired with an AI-powered evaluation of your resume against job descriptions.</div><p></p>
+                        
+                        <h6 class="text-center"> 😊 Trusted By Professionals 😊 25,540+ Satisfied Users</h6>
+                        <h3 class="text-center"></h3>
+                        <!-- <del><s>₹249</s></del> -->
+                        
+                        <!-- New Impactful Bullet Points -->
+                        <div class="impactful-bullets">
+                            <ul>
+                                <li><i class="fa fa-check"></i> <strong>AI-Driven Matching Precision</strong></li>
+                                <li><i class="fa fa-check"></i> <strong>Automated Skill Gap Insights</strong></li>
+                                <li><i class="fa fa-check"></i> <strong>Comprehensive Job Insights & Resume Sentiment Analysis</strong></li>
+                                <li><i class="fa fa-check"></i> <strong>Significant Time and Cost Savings</strong></li>
+                            </ul>
+                        </div>
+
                         <div class="card">
                             <div class="card-body">
-                                <form id="resume-form" enctype="multipart/form-data">
-                                    <div class="form-group">
-                                        <label for="resume_file" class="text-center-strong">Upload Your Resume (PDF or DOCX):</label>
-                                        <input type="file" class="form-control-file" id="resume_file" name="resume_file" accept=".pdf,.docx" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="job_description" class="text-center-strong">Paste Your Job Description Here:</label>
-                                        <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
-                                    </div>
-                                    <!-- Button Container -->
-                                    <div class="button-container">
-                                        <div class="button-group">
-                                            <button type="submit" class="evaluate-button">Analyze My Resume</button>
-                                            <button type="button" id="reset-button" class="reset-button" disabled>Clear Fields</button>
+                                <div class="form-container">
+                                    <form id="resume-form" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            
+                                            <label for="resume_file" class="text-center-strong">Upload Your Resume (PDF or DOCX):</label>
+                                            
+                                            <input type="file" class="form-control-file" id="resume_file" name="resume_file" accept=".pdf,.docx" required>
                                         </div>
-                                    </div>
-                                    <div id="progress-bar" class="progress-container mt-3">
-                                        <div class="progress-bar" id="progress-bar-inner">
-                                            <span class="progress-text" id="progress-text">Evaluating...</span>
+                                        <div class="form-group">
+                                            <label for="job_description" class="text-center-strong">Paste Your Job Description Here:</label>
+                                            <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
                                         </div>
+                                        <!-- Button Container -->
+                                        <div class="button-container">
+                                            <div class="button-group">
+                                                <button type="submit" class="evaluate-button">Analyze My Resume</button>
+                                                <button type="button" id="reset-button" class="reset-button" disabled>Clear Fields</button>
+                                            </div>
+                                            <!-- <div id="progress-bar" class="progress-container mt-3">
+                                                <div class="progress-bar" id="progress-bar-inner">
+                                                    <span class="progress-text" id="progress-text">Evaluating...</span>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </form>
+                                    <!-- Coffee Button outside the form -->
+                                    <div class="coffee-button-container">
+                                        <button id="checkout-button" class="btn btn-warning buy-coffee-button">
+                                            <i class="material-icons">credit_card</i> Buy Me a Coffee
+                                        </button>
                                     </div>
-                                </form>
-                                <!-- Button for Coffee payment outside the form -->
-                                <div class="d-flex justify-content-end mt-3">
-                                    <button id="checkout-button" class="buy-coffee-btn">
-                                        <i class="material-icons">credit_card</i> Buy Me a Coffee
-                                    </button>
                                 </div>
-                           <!-- Extraction Results Section -->
-<div id="extraction-results" class="mt-3" style="display: none;">
-    <h3>Extracted Information from Job Description:</h3>
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="extraction-item">
-                        <strong>Email:</strong>
-                        <p id="extracted-email">Not Found</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="extraction-item">
-                        <strong>Phone:</strong>
-                        <p id="extracted-phone">Not Found</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="extraction-item">
-                        <strong>Visa Info:</strong>
-                        <p id="extracted-visa">Not Found</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-
-                            </div>
-                        </div>
-                        <!-- Evaluation Results -->
-                        <div id="result" class="card result-panel" style="display: none;">
-                            <div class="card-body">
-                                <h3 class="text-center">Your Resume Match Score: <span id="matchText"></span></h3>
-                                <div class="row">
-                                    <!-- Chart and Matching Skills Section -->
-                                    <div class="col-md-4">
-                                        <div class="card card-chart">
-                                            <div class="card-body">
-                                                <canvas id="matchChart"></canvas>
-                                                <p class="text-center mt-3 text-small" id="matchScoreText"></p>
+                                <!-- Evaluation Results Modal -->
+                                <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="resultModalLabel">Analysis Results</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card card-full-width">
-                                            <div class="card-body">
-                                                <h5 class="no-top-margin">Skills that Match the Job<span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Skills that match the job description requirements.</div>
-                                                </span></h5>
-                                                <div class="tags" id="matchingTags">Not Found</div>
-                                                <h5 class="mt-4">Skills Not Mentioned in the Job <span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Skills that do not match the job description requirements.</div>
-                                                </span></h5>
-                                                <div class="tags" id="non-matching-tags">Not Found</div>
+                                            <div class="modal-body">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-md-6">                                                            
+                                                            <label class="text-center-strong"><span id="matchText"></span></label><p></p>
+                                                            <label class="text-center-strong">Resume Score: <span id="matchScoreText" class="label-text-center-strong"></span></label><label class="text-center-strong">/100</label>
+                                                            
+                                                            <div id="matchChartContainer" class="mb-4">
+                                                                <canvas id="matchChart"></canvas>
+                                                                
+                                                            </div>
+                                                            <label class="text-center-strong">Keyword Density</label>
+                                                            <div id="keywordDensity" class="mb-4 tags-container">
+                                                                <h5>Keyword Density</h5>
+                                                                <div class="keyword-density"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="text-center-strong">Matching Tags</label>
+                                                            <div id="matchingTags" class="mb-4 tags-container">
+                                                                <h5>Matching Tags</h5>
+                                                                <div class="tags-section"></div>
+                                                            </div>
+                                                            <label class="text-center-strong">Non-Matching Tags</label>
+                                                            <div id="non-matching-tags" class="mb-4 tags-container">
+                                                                <h5>Non-Matching Tags</h5>
+                                                                <div class="tags-section"></div>
+                                                            </div>
+                                                            <label class="text-center-strong">Language Tone</label>
+                                                            <div id="languageTone" class="mb-4">
+                                                                <h5>Language Tone</h5>
+                                                                <div class="job-analysis"></div>
+                                                            </div>
+                                                            <label class="text-center-strong">Emphasis</label>
+                                                            <div id="emphasis" class="mb-4">
+                                                                <h5>Emphasis</h5>
+                                                                <div class="job-analysis"></div>
+                                                            </div>
+                                                            <label class="text-center-strong">Social Responsibility</label>
+                                                            <div id="socialResponsibility" class="mb-4">
+                                                                <h5>Social Responsibility</h5>
+                                                                <div class="job-analysis"></div>
+                                                            </div>
+                                                            <label class="text-center-strong">Sentiment of Resume</label>
+                                                            <div id="sentiment-analysis-result" class="mb-4">
+                                                                <h5>Sentiment Analysis</h5>
+                                                                <div class="sentiment-analysis"></div>
+                                                            </div>
+                                                            
+                                                            <div id="improvementSuggestions">
+                                                                <h5>Improvement Suggestions</h5>
+                                                                <div class="improvement-suggestions"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <label class="text-center-strong">Extracted Information from Job Description</label>
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="extraction-item">
+                                                                    <strong>Email:</strong>
+                                                                    <p id="extracted-email">Not Found</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="extraction-item">
+                                                                    <strong>Phone:</strong>
+                                                                    <p id="extracted-phone">Not Found</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="extraction-item">
+                                                                    <strong>Visa Info:</strong>
+                                                                    <p id="extracted-visa">Not Found</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- <div class="row mt-3">
+                                                            <div class="col-md-4">
+                                                                <div class="extraction-item">
+                                                                    <strong>Company Name:</strong>
+                                                                    <p id="extracted-company">Not Found</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="extraction-item">
+                                                                    <strong>Skills:</strong>
+                                                                    <p id="extracted-skills">Not Found</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="extraction-item">
+                                                                    <strong>Location:</strong>
+                                                                    <p id="extracted-location">Not Found</p>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
+                                                        <!-- <div class="row mt-3">
+                                                            <div class="col-md-4">
+                                                                <div class="extraction-item">
+                                                                    <strong>Role:</strong>
+                                                                    <p id="extracted-role">Not Found</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="extraction-item">
+                                                                    <strong>Industry:</strong>
+                                                                    <p id="extracted-industry">Not Found</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="extraction-item">
+                                                                    <strong>Experience Required:</strong>
+                                                                    <p id="extracted-experience">Not Found</p>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Job Analysis and Keyword Density Section -->
-                                    <div class="col-md-4">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h4>Job Analysis</h4>
-                                                <strong>Overall Tone of Your Resume:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Overall Sentiment analysis of your Resume</div>
-                                                </span>
-                                                <div id="sentiment-analysis-result">Not Found</div>
-
-                                                <p></p>
-                                                <strong>Job Description Tone:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">The overall tone used in the job description (formal, casual, etc.).</div>
-                                                </span>
-                                                <div id="languageTone">Not Found</div>
-
-                                                <p></p>
-                                                <strong>Focus on Teamwork or Individual Work:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">Whether the job description emphasizes teamwork or individual contribution.</div>
-                                                </span>
-                                                <div id="emphasis">Not Found</div>
-
-                                                <p></p>
-                                                <strong>Social Responsibility:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">The company’s commitment to social responsibility, such as sustainability and diversity.</div>
-                                                </span>
-                                                <div id="socialResponsibility">Not Found</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h4>Keyword occurrence</h4>
-                                                <strong>Keyword occurrence in Job Description:</strong><span class="tooltip-icon">ℹ️
-                                                    <div class="tooltip-content">The frequency of important keywords in the job description.</div>
-                                                </span>
-                                                <div id="keywordDensity">Not Found</div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="evaluate-button" data-dismiss="modal">Close</button>
+                                                <!-- <button type="button" id="generate-resume" class="btn btn-primary">Generate Updated Resume</button> -->
                                             </div>
                                         </div>
                                     </div>
@@ -202,8 +264,7 @@
             </main>
         </div>
     </div>
-   
+
     {% include 'footer.html' %}
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>

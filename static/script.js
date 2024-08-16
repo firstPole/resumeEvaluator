@@ -1,7 +1,6 @@
 $(document).ready(function() {
     var matchChartInstance = null;
 
-    // Function to reset the form and UI elements
     function resetForm() {
         console.log('Resetting form...');
         $('#resume-form')[0].reset(); // Reset form fields
@@ -20,17 +19,13 @@ $(document).ready(function() {
         $('#matchScoreText').empty(); // Clear match score text
         $('#improvementSuggestions').hide(); // Hide improvement suggestions
 
-        // Destroy the existing Chart.js instance
         if (matchChartInstance) {
             matchChartInstance.destroy();
             matchChartInstance = null;
         }
 
-        // Ensure canvas exists and is properly reset
         var $canvas = $('#matchChart');
-        if ($canvas.length === 0) {
-            console.error('Canvas element with id matchChart is not found.');
-        } else {
+        if ($canvas.length > 0) {
             var canvas = $canvas[0];
             var ctx = canvas.getContext('2d');
             if (ctx) {
@@ -38,66 +33,49 @@ $(document).ready(function() {
             }
         }
 
-        // Disable the reset button after reset
+        $('#resultModal').modal('hide'); // Hide the modal dialog
+        $('#spinner-overlay').hide(); // Hide the spinner
         $('#reset-button').prop('disabled', true);
     }
 
-    $(document).ready(function() {
-        $('#feedback-form').submit(function(e) {
-            e.preventDefault();
-            const feedback = $('#feedback-text').val();
-            // Handle the feedback submission (e.g., via AJAX)
-            alert('Thank you for your feedback: ' + feedback);
-            $('#feedbackModal').modal('hide');
-        });
-    });
-
     function updateResetButtonState() {
-        const resumeFile = $('#resume_file').val(); // Assuming file input has ID `resume_file`
-        const jobDescription = $('#job_description').val(); // Assuming job description input has ID `job_description`
+        const resumeFile = $('#resume_file').val();
+        const jobDescription = $('#job_description').val();
         $('#reset-button').prop('disabled', !resumeFile && !jobDescription);
     }
-
-    $('#checkout-button').click(function() {
-        $("#progress-bar").hide(); // Ensure progress bar is hidden
-        console.log("inside dropin UI");
-        window.location.href = '/dropin';
-    });
 
     $('#resume-form').on('submit', function(event) {
         event.preventDefault();
 
-        const progressBarContainer = document.getElementById('progress-bar');
-        const progressBarInner = document.getElementById('progress-bar-inner');
-        const progressText = document.getElementById('progress-text');
+        $('#spinner-overlay').show(); // Show the spinner
 
-        progressBarContainer.style.display = 'block';
+        // const progressBarContainer = document.getElementById('progress-bar');
+        // const progressBarInner = document.getElementById('progress-bar-inner');
+        // const progressText = document.getElementById('progress-text');
 
-        // Simulate progress
-        let progress = 0;
-        const interval = setInterval(() => {
-            if (progress < 100) {
-                progress += 10;
-                progressBarInner.style.width = progress + '%';
-                progressText.textContent = progress + '%';
-            } else {
-                clearInterval(interval);
-                progressText.textContent = 'Evaluation Complete!';
-            }
-        }, 200);
+        // progressBarContainer.style.display = 'block';
+
+        // let progress = 0;
+        // const interval = setInterval(() => {
+        //     if (progress < 100) {
+        //         progress += 10;
+        //         progressBarInner.style.width = progress + '%';
+        //         progressText.textContent = progress + '%';
+        //     } else {
+        //         clearInterval(interval);
+        //         progressText.textContent = 'Evaluation Complete!';
+        //     }
+        // }, 200);
 
         var formData = new FormData(this);
         formData.append('resume_file', $('#resume_file')[0].files[0]);
         formData.append('job_description', $('#job_description').val());
-        console.log('FormData:', formData); // Log FormData for debugging
 
         function updateExtractionResults(data) {
-            console.log('Update Extraction Results:', data); // Log the data to check its structure
-        
-            // Check if data is defined and has the expected properties
-            var email = data && data.email ? data.email : 'No Data Available';
-            var phoneNumber = data && data.phone_number ? data.phone_number : 'No Data Available';
-            var visaInfo = data && data.visa_info ? data.visa_info : 'No Data Available';
+            console.log('Update Extraction Results:', data);
+            var email = data && data.email ? data.email : 'Not Found';
+            var phoneNumber = data && data.phone_number ? data.phone_number : 'Not Found';
+            var visaInfo = data && data.visa_info ? data.visa_info : 'Not Found';
         
             $('#extracted-email').text(email);
             $('#extracted-phone').text(phoneNumber);
@@ -112,25 +90,25 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function(response) {
-                console.log('Response:', response); // Log the response for debugging
-                
-                // Update extraction results
-                updateExtractionResults(response);
+                console.log('Response:', response);
 
-                $('#progress-bar').hide();
-                $('#result').show();
+                $('#spinner-overlay').hide(); // Hide the spinner
+                $('#progress-bar').hide(); // Hide the progress bar
+                $('#resultModal').modal('show'); // Show the modal dialog
+
+                updateExtractionResults(response);
 
                 var matchScore = response.match_score;
                 var matchingTags = response.relevant_tags;
                 var nonMatchingTags = response.non_matching_tags;
                 var keywordDensity = response.job_analysis.keyword_density;
 
-                // Destroy existing Chart.js instance if it exists
+
+                
                 if (matchChartInstance) {
                     matchChartInstance.destroy();
                 }
 
-                // Ensure canvas is created and accessible
                 var canvas = document.getElementById('matchChart');
                 if (!canvas) {
                     console.error('Canvas element is not found.');
@@ -143,12 +121,10 @@ $(document).ready(function() {
                     return;
                 }
 
-                // Function to get CSS variable value
                 function getCSSVariable(name) {
                     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
                 }
 
-                // Create a new chart
                 matchChartInstance = new Chart(ctx, {
                     type: 'pie',
                     data: {
@@ -158,19 +134,19 @@ $(document).ready(function() {
                             backgroundColor: [ 
                                 getCSSVariable('--chart-color-matching'),
                                 getCSSVariable('--chart-color-non-matching')
-                            ], // Updated colors
+                            ],
                         }]
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false, // Allow the chart to fill its container
+                        maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: 'top',
-                                align: 'start', // Align legends to start (horizontal)
+                                align: 'start',
                                 labels: {
-                                    boxWidth: 20, // Adjust box width as needed
-                                    padding: 20 // Add padding between the legends
+                                    boxWidth: 20,
+                                    padding: 20
                                 }
                             },
                             tooltip: {
@@ -194,41 +170,41 @@ $(document).ready(function() {
                     }
                 });
 
-                console.log('Chart created:', matchChartInstance); // Log chart creation
+                console.log('Chart created:', matchChartInstance);
 
                 var matchText = matchScore > 90 ? 'Strong Match' :
                                 matchScore >= 70 ? 'Good Match' : 
                                 matchScore >= 50 ? 'Weak Match' : 'Very Weak Match';
                 $('#matchText').text(matchText);
-                $('#matchScoreText').text(matchScore + '%');
+                var roundedScore = Math.round(matchScore);
+                $('#matchScoreText').text(roundedScore + '');
 
-                // Display tags
                 $('#matchingTags').empty();
                 $('#non-matching-tags').empty();
 
                 matchingTags.forEach(function(tag) {
-                    $('#matchingTags').append('<span class="tag matching">' + tag + '</span>'); // Added 'matching' class
+                    $('#matchingTags').append('<span class="tag matching">' + tag + '</span>');
                 });
 
                 nonMatchingTags.forEach(function(tag) {
                     $('#non-matching-tags').append('<span class="tag non-matching">' + tag + '</span>');
                 });
 
-                // Display sentiment analysis
+                $('#sentiment-analysis-result').empty();
                 if (response.sentiment && response.sentiment.analysis) {
                     let sentimentIcon;
                     switch (response.sentiment.analysis) {
                         case 'Positive':
-                            sentimentIcon = '🟢'; // Green circle
+                            sentimentIcon = '🟢';
                             break;
                         case 'Negative':
-                            sentimentIcon = '🔴'; // Red circle
+                            sentimentIcon = '🔴';
                             break;
                         case 'Neutral':
-                            sentimentIcon = '🟡'; // Yellow circle
+                            sentimentIcon = '🟡';
                             break;
                         default:
-                            sentimentIcon = '⚪'; // White circle (default case)
+                            sentimentIcon = '⚪';
                     }
                     $('#sentiment-analysis-result').html(
                         '<div class="sentiment-result">' +
@@ -236,68 +212,46 @@ $(document).ready(function() {
                         '</div>'
                     );
                 } else {
-                    $('#sentiment-analysis-result').text('No Data Available');
+                    $('#sentiment-analysis-result').text('Not Found');
                 }
 
-                // Display keyword density
                 $('#keywordDensity').empty();
                 if (keywordDensity.length > 0) {
                     keywordDensity.forEach(function(item) {
                         $('#keywordDensity').append('<div class="keyword-bar">' + item.keyword + ': ' + item.density + '</div>');
                     });
                 } else {
-                    $('#keywordDensity').append('No Data Available');
+                    $('#keywordDensity').text('Not Found');
                 }
 
-                // Update job analysis sections
-                $('#languageTone').text(response.job_analysis.language_tone || 'No Data Available');
-                $('#emphasis').text(response.job_analysis.emphasis || 'No Data Available');
-                $('#socialResponsibility').text(response.job_analysis.social_responsibility || 'No Data Available');
+                $('#languageTone').text(response.job_analysis.language_tone || 'Not Found');
+                $('#emphasis').text(response.job_analysis.emphasis || 'Not Found');
+                $('#socialResponsibility').text(response.job_analysis.social_responsibility || 'Not Found');
+                $('#improvementSuggestions').text(response.improvement_suggestions || 'No Suggestions Available');
 
-                // Display improvement suggestions if score is below 50%
-                if (matchScore < 50) {
-                    var suggestions = `
-                        <h4>Improvement Suggestions:</h4>
-                        <p>Your resume and the job description have a low match score. Here are some tips to improve it:</p>
-                        <ul>
-                            <li>Ensure your resume includes keywords from the job description.</li>
-                            <li>Highlight relevant skills and experiences that align with the job requirements.</li>
-                            <li>Customize your resume for each job application.</li>
-                        </ul>
-                    `;
-                    $('#improvementSuggestions').html(suggestions).show();
-                } else {
-                    $('#improvementSuggestions').hide();
-                }
+                $('#downloadResumeBtn').attr('href', response.updated_resume_url);
 
-                // Enable the reset button
-                $('#reset-button').prop('disabled', false);
-                updateResetButtonState();
             },
             error: function(xhr, status, error) {
-                console.error('Error:', error);
-                $('#progress-bar').hide();
-                alert('An error occurred. Please try again.');
+                console.error('AJAX Error:', status, error);
+                $('#spinner-overlay').hide(); // Hide the spinner
+                $('#progress-bar').hide(); // Hide the progress bar
+                $('#error-message').text('An error occurred. Please try again.').show();
+                $('#reset-button').prop('disabled', false);
             }
         });
     });
 
-    // Reset button event handler
-    $('#reset-button').click(function() {
+    $('#reset-button').on('click', function() {
         resetForm();
     });
 
-    // Update reset button state on form change
     $('#resume_file, #job_description').on('change keyup', function() {
         updateResetButtonState();
     });
-
-    // Handle showing the modal and form reset
-    $('#show-feedback-modal').click(function() {
-        $('#feedbackModal').modal('show');
-    });
-
-    $('#feedbackModal').on('hidden.bs.modal', function () {
-        resetForm(); // Reset the form when modal is closed
+    $('#checkout-button').click(function() {
+        $("#progress-bar").hide(); // Ensure progress bar is hidden
+        console.log("inside dropin UI");
+        window.location.href = '/dropin';
     });
 });
