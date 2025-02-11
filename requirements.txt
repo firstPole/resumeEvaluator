@@ -21,7 +21,7 @@ cloudpathlib==0.18.1
 colorama==0.4.6
 compressed-rtf==1.0.6
 confection==0.1.5
-cryptography==43.0.0
+cryptography==44.0.1
 cymem==2.0.8
 distro==1.9.0
 docx2txt==0.8
