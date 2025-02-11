@@ -1,10 +1,11 @@
-# Resume Evaluator
+# Resume Evaluator 🚀  
 
-![GitHub last commit](https://img.shields.io/github/last-commit/firstPole/resumeEvaluator)
-![GitHub issues](https://img.shields.io/github/issues/firstPole/resumeEvaluator)
-![GitHub forks](https://img.shields.io/github/forks/firstPole/resumeEvaluator?style=social)
-![GitHub stars](https://img.shields.io/github/stars/firstPole/resumeEvaluator?style=social)
-![GitHub license](https://img.shields.io/github/license/firstPole/resumeEvaluator)
+[![GitHub issues](https://img.shields.io/github/issues/firstPole/resumeEvaluator)](https://github.com/firstPole/resumeEvaluator/issues)
+[![GitHub forks](https://img.shields.io/github/forks/firstPole/resumeEvaluator)](https://github.com/firstPole/resumeEvaluator/network)
+[![GitHub stars](https://img.shields.io/github/stars/firstPole/resumeEvaluator)](https://github.com/firstPole/resumeEvaluator/stargazers)
+[![License](https://img.shields.io/github/license/firstPole/resumeEvaluator)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/firstPole/resumeEvaluator)](https://github.com/firstPole/resumeEvaluator/commits/main)
+
 
 
 # Resume Evaluator
