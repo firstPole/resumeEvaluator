@@ -1,5 +1,14 @@
 # Resume Evaluator
 
+![GitHub last commit](https://img.shields.io/github/last-commit/firstPole/resumeEvaluator)
+![GitHub issues](https://img.shields.io/github/issues/firstPole/resumeEvaluator)
+![GitHub forks](https://img.shields.io/github/forks/firstPole/resumeEvaluator?style=social)
+![GitHub stars](https://img.shields.io/github/stars/firstPole/resumeEvaluator?style=social)
+![GitHub license](https://img.shields.io/github/license/firstPole/resumeEvaluator)
+
+
+# Resume Evaluator
+
 ## Overview
 
 The Resume Evaluator is a web application built with Flask that uses NLP and AI techniques to analyze and match resumes against job descriptions. This tool helps users assess how well their resumes align with job requirements, visualize matching skills, and improve their resumes based on detailed analysis.
